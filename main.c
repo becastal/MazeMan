@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "labirintos.h"
 
 int main() {
 	int sair = 0;
@@ -19,7 +20,9 @@ int main() {
 			case 0:
 				sair = 1;
 				break;
-			e
+			case 1:
+				gera_labirinto();
+				break;
 			default:
 				puts("[e] selecao invalida!");
 		}
