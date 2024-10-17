@@ -8,5 +8,6 @@ typedef struct {
 } labirinto;
 
 void gera_labirinto();
+void printa_labirinto(labirinto L);
 
 #endif

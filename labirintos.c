@@ -48,12 +48,12 @@ void gera_labirinto() {
 
 	puts("[!] possiveis algoritmos para gerar o labirinto");
 	puts("[0] algoritmo da binary tree.");
-	puts("[1] algoritmo de sinewinder.");
+	puts("[1] algoritmo de sidewinder.");
 	puts("[2] algoritmo de aldous-border.");
 	puts("[3] algoritmo de hunt-and-kill.");
 	puts("[4] algoritmo de backtracking.");
 
-	int ok_algoritmo = 0;
+	int ok_algoritmo = 1;
 	while (!ok_algoritmo) {
 		printf("[?] selecione uma das opcoes: ");
 		int selecao;
@@ -66,9 +66,20 @@ void gera_labirinto() {
 				ok_algoritmo = 0;
 		}
 	}
+
+	printa_labirinto(novo_labirinto);
 	
 	for (int i = 0; i < novo_labirinto.linhas; i++) {
 		free(novo_labirinto.celulas[i]);
 	}
 	free(novo_labirinto.celulas);
+}
+
+void printa_labirinto(labirinto L) {
+	for (int i = 0; i < L.linhas; i++) {
+		for (int j = 0; j < L.colunas; j++) {
+			printf("%c", L.celulas[i][j]);
+		}
+		printf("\n");
+	}
 }
