@@ -1,4 +1,5 @@
 #include "labirintos.h"
+#include "arquivos.h"
 #include <stdlib.h>
 #include <time.h>
 
@@ -98,10 +99,28 @@ void gera_labirinto() {
 
 		ok_pacman = (selecao_pacman == 's' || selecao_pacman == 'S' ||
 					 selecao_pacman == 'n' || selecao_pacman == 'N');
-		if (!ok_linhas) puts("[e] informe 's' ou 'n'.");
+		if (!ok_pacman) puts("[e] informe 's' ou 'n'.");
 	}
 
-	if (selecao_pacman == 's' || selecao_pacman == 'S') pacmaniza(&novo_labirinto);
+	if (selecao_pacman == 's' || selecao_pacman == 'S') {
+		pacmaniza(&novo_labirinto);
+	}
+
+	char selecao_salvar;
+	int ok_salvar = 0;
+
+	while (!ok_salvar) {
+		printf("[?] salvar arquivo (s/n)? ");
+		scanf(" %c", &selecao_salvar);
+
+		ok_salvar = (selecao_salvar == 's' || selecao_salvar == 'S' ||
+					 selecao_salvar == 'n' || selecao_salvar == 'N');
+		if (!ok_salvar) puts("[e] informe 's' ou 'n'.");
+	}
+
+	if (selecao_salvar == 's' || selecao_salvar == 'S') {
+		salva_labirinto(&novo_labirinto);
+	}
 
 	printa_labirinto(novo_labirinto);
 	
