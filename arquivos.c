@@ -112,4 +112,10 @@ void le_labirinto(labirinto* L, char* nome) {
 
     fclose(arquivo);
 }
-
+/*
+void salvar_bin(labirinto* L){
+    FILE* arq = fopen("usuarios/usuario.bin", "wb");
+    fwrite(nome[], sizeof(nome),1,arq);
+    fwrite(pontuacao, sizeof(int),1,arq);
+}
+*/
