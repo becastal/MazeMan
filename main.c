@@ -2,6 +2,7 @@
 #include "labirintos.h"
 #include "arquivos.h"
 
+
 int main() {
 	int sair = 0;
 	labirinto L = escolhe_labirinto();
@@ -23,6 +24,11 @@ int main() {
 				break;
 			case 1:
 				gera_labirinto();
+				break;
+			case 2:
+				break;
+			case 4:
+			pacmaniza_game();
 				break;
 			default:
 				puts("[e] selecao invalida!");

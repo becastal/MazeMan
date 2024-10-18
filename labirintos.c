@@ -60,6 +60,7 @@ void gera_labirinto() {
 	puts("[2] algoritmo de aldous-border.");
 	puts("[3] algoritmo de hunt-and-kill.");
 	puts("[4] algoritmo de backtracking.");
+	puts("[5] algoritmo de Pacmaniza");
 
 	int ok_algoritmo = 0;
 	while (!ok_algoritmo) {
@@ -84,27 +85,31 @@ void gera_labirinto() {
 			case 4:
 				algoritmo_backtracking(&novo_labirinto);
 				break;
+			case 5:												//caso em que é criado um labirinto e colocado decente para o mazeman
+				algoritmo_aldous_border(&novo_labirinto);
+				pacmaniza(&novo_labirinto);
+				break;
 			default:
 				puts("[e] selecao invalida!");
 				ok_algoritmo = 0;
 		}
 	}
 
-	char selecao_pacman;
-	int ok_pacman = 0;
+	// char selecao_pacman;
+	// int ok_pacman = 0;
 
-	while (!ok_pacman) {
-		printf("[?] fazer esse labirinto ser decente para pacman (s/n)? ");
-		scanf(" %c", &selecao_pacman);
+	// while (!ok_pacman) {
+	// 	printf("[?] fazer esse labirinto ser decente para pacman (s/n)? ");
+	// 	scanf(" %c", &selecao_pacman);
 
-		ok_pacman = (selecao_pacman == 's' || selecao_pacman == 'S' ||
-					 selecao_pacman == 'n' || selecao_pacman == 'N');
-		if (!ok_pacman) puts("[e] informe 's' ou 'n'.");
-	}
+	// 	ok_pacman = (selecao_pacman == 's' || selecao_pacman == 'S' ||
+	// 				 selecao_pacman == 'n' || selecao_pacman == 'N');
+	// 	if (!ok_pacman) puts("[e] informe 's' ou 'n'.");
+	// }
 
-	if (selecao_pacman == 's' || selecao_pacman == 'S') {
-		pacmaniza(&novo_labirinto);
-	}
+	// if (selecao_pacman == 's' || selecao_pacman == 'S') {
+	// 	pacmaniza(&novo_labirinto);
+	// }
 
 	char selecao_salvar;
 	int ok_salvar = 0;
@@ -392,25 +397,8 @@ void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
 	}
 }
 
-void pacmaniza(labirinto* L) {
-	// com um labiritnto ja montado, pacmaniza o transforma em um mapa mais interessante para o jogo do pacman
-	// quebrando paredes nao antes quebradas e refletindo o labirinto.
-	// mais formalmente, pacmaniza adiciona arestas entre vertices nao antes conectados no grafo de caminho.
-	// como os grafos de caminhos dos labirintos gerados pelos algoritmos sao todos arvores, esse algorimo faz
-	// o grafo ser uma nao-arvore, aumentando a quantidade de caminhos entre dois vertices para > 1.
-	srand(time(NULL));
-
-	int ok_conectividade = 0, conexoes;
-	while (!ok_conectividade) {
-		printf("[?] indique a quantidade de novas conexoes: ");
-		scanf("%d", &conexoes);
-
-		ok_conectividade = (conexoes >= 1);
-		if (!ok_conectividade) puts("[e] informe um valor inteiro >= 1.");
-	}
-
-	// gerando as novas conexoes;
-	for (int feito = 0; feito < conexoes;) {
+void pacmaniza(labirinto *L){
+	for (int feito = 0; feito < 20;) {				//numero padrao de conexões, pra ser mais facil (Arrumar dps)
 		int linha = posicao_aleatoria(L, 1);
 		int coluna = posicao_aleatoria(L, 0);
 
@@ -426,11 +414,12 @@ void pacmaniza(labirinto* L) {
 			feito++;
 		}
 	}
-
 	// espelhando o labirinto;
 	for (int i = 0; i < L->linhas; i++) {
 		for (int j = L->colunas-1; j >= L->colunas / 2; j--) {
 			L->celulas[i][j] = L->celulas[i][L->colunas - j - 1];
 		}
 	}
+	
 }
+
