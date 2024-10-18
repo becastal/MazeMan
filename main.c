@@ -22,7 +22,6 @@ int main() {
 			case 1:
 				gera_labirinto();
 				break;
-				
 			default:
 				puts("[e] selecao invalida!");
 		}

@@ -68,9 +68,20 @@ void gera_labirinto() {
 				ok_algoritmo = 0;
 		}
 	}
+
+	printa_labirinto(novo_labirinto);
 	
 	for (int i = 0; i < novo_labirinto.linhas; i++) {
 		free(novo_labirinto.celulas[i]);
 	}
 	free(novo_labirinto.celulas);
+}
+
+void printa_labirinto(labirinto L) {
+	for (int i = 0; i < L.linhas; i++) {
+		for (int j = 0; j < L.colunas; j++) {
+			printf("%c", L.celulas[i][j]);
+		}
+		printf("\n");
+	}
 }
