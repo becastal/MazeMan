@@ -89,6 +89,20 @@ void gera_labirinto() {
 		}
 	}
 
+	char selecao_pacman;
+	int ok_pacman = 0;
+
+	while (!ok_pacman) {
+		printf("[?] fazer esse labirinto ser decente para pacman (s/n)? ");
+		scanf(" %c", &selecao_pacman);
+
+		ok_pacman = (selecao_pacman == 's' || selecao_pacman == 'S' ||
+					 selecao_pacman == 'n' || selecao_pacman == 'N');
+		if (!ok_linhas) puts("[e] informe 's' ou 'n'.");
+	}
+
+	if (selecao_pacman == 's' || selecao_pacman == 'S') pacmaniza(&novo_labirinto);
+
 	printa_labirinto(novo_labirinto);
 	
 	for (int i = 0; i < novo_labirinto.linhas; i++) {
@@ -276,10 +290,7 @@ void algoritmo_hunt_and_kill(labirinto* L) {
 			for (int i = 1; i < L->linhas - 1 && !hunt_ok; i += 2) {
 				for (int j = 1; j < L->colunas - 1 && !hunt_ok; j += 2) {
 					if (!visitado[i][j]) {
-						for (int d = 0; d < 4; d++) {
-							int ni = i + di_2[d];
-							int nj = j + dj_2[d];
-							if (posicao_valida(L, ni, nj) && visitado[ni][nj]) {
+						for (int d = 0; d < 4; d++) { int ni = i + di_2[d]; int nj = j + dj_2[d]; if (posicao_valida(L, ni, nj) && visitado[ni][nj]) {
 								posicao_linha = i;
 								posicao_coluna = j;
 								L->celulas[(i + ni) / 2][(j + nj) / 2] = ' ';
@@ -344,6 +355,49 @@ void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
 			!visitado[nova_linha][nova_coluna]) {
 			L->celulas[(linha + nova_linha) / 2][(coluna + nova_coluna) / 2] = ' '; 
 			backtracking(visitado, L, nova_linha, nova_coluna);
+		}
+	}
+}
+
+void pacmaniza(labirinto* L) {
+	// com um labiritnto ja montado, pacmaniza o transforma em um mapa mais interessante para o jogo do pacman
+	// quebrando paredes nao antes quebradas e refletindo o labirinto.
+	// mais formalmente, pacmaniza adiciona arestas entre vertices nao antes conectados no grafo de caminho.
+	// como os grafos de caminhos dos labirintos gerados pelos algoritmos sao todos arvores, esse algorimo faz
+	// o grafo ser uma nao-arvore, aumentando a quantidade de caminhos entre dois vertices para > 1.
+	srand(time(NULL));
+
+	int ok_conectividade = 0, conexoes;
+	while (!ok_conectividade) {
+		printf("[?] indique a quantidade de novas conexoes: ");
+		scanf("%d", &conexoes);
+
+		ok_conectividade = (conexoes >= 1);
+		if (!ok_conectividade) puts("[e] informe um valor inteiro >= 1.");
+	}
+
+	// gerando as novas conexoes;
+	for (int feito = 0; feito < conexoes;) {
+		int linha = posicao_aleatoria(L, 1);
+		int coluna = posicao_aleatoria(L, 0);
+
+		int direcao = rand() % 4;
+
+		int nova_linha = linha + di_1[direcao];
+		int nova_coluna = coluna + dj_1[direcao];
+
+		if (posicao_valida(L, nova_linha, nova_coluna) &&
+			L->celulas[nova_linha][nova_coluna] == '#' &&
+			nova_coluna <= L->colunas) {
+			L->celulas[nova_linha][nova_coluna] = ' ';
+			feito++;
+		}
+	}
+
+	// espelhando o labirinto;
+	for (int i = 0; i < L->linhas; i++) {
+		for (int j = L->colunas-1; j >= L->colunas / 2; j--) {
+			L->celulas[i][j] = L->celulas[i][L->colunas - j - 1];
 		}
 	}
 }
