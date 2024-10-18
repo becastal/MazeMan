@@ -1,6 +1,6 @@
 #include "labirintos.h"
 #include <stdlib.h>
-
+#include <time.h>
 
 void gera_labirinto() {
 	puts("[+] novo labirinto!");
@@ -55,7 +55,7 @@ void gera_labirinto() {
 	puts("[3] algoritmo de hunt-and-kill.");
 	puts("[4] algoritmo de backtracking.");
 
-	int ok_algoritmo = 1;
+	int ok_algoritmo = 0;
 	while (!ok_algoritmo) {
 		printf("[?] selecione uma das opcoes: ");
 		int selecao;
@@ -63,6 +63,9 @@ void gera_labirinto() {
 
 		ok_algoritmo = 1;
 		switch (selecao) {
+			case 0:
+				algoritmo_binary_tree(&novo_labirinto);
+				break;	
 			default:
 				puts("[e] selecao invalida!");
 				ok_algoritmo = 0;
@@ -83,5 +86,27 @@ void printa_labirinto(labirinto L) {
 			printf("%c", L.celulas[i][j]);
 		}
 		printf("\n");
+	}
+}
+
+void algoritmo_binary_tree(labirinto* L) {
+	// pra cada posicao da matriz, tira ou a parede da direita ou a parede de baixo;
+	// complexidade O(nm);
+	srand(time(NULL));
+
+	for (int posicao_linha = 1; posicao_linha < L->linhas; posicao_linha += 2) {
+		for (int posicao_coluna = 1; posicao_coluna < L->colunas; posicao_coluna += 2) {
+			int libera_direita = rand() & 1;
+
+			if (posicao_linha == L->linhas - 2) libera_direita = 1;
+			if (posicao_coluna == L->colunas - 2) libera_direita = 0;
+			if (posicao_linha == L->linhas - 2 && posicao_coluna == L->colunas - 2) break;
+
+			if (libera_direita) {
+				L->celulas[posicao_linha][posicao_coluna + 1] = ' ';
+			} else {
+				L->celulas[posicao_linha + 1][posicao_coluna] = ' ';
+			}
+		}
 	}
 }
