@@ -141,3 +141,7 @@ void algoritmo_sidewinder(labirinto* L) {
         }
     }
 }
+
+int posicao_valida(labirinto* L, int i, int j) {
+    return i >= 1 && j >= 1 && i < L->linhas - 1 && j < L->colunas - 1;
+}
