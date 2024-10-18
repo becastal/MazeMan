@@ -5,5 +5,6 @@
 
 void salva_labirinto(labirinto* L);
 labirinto escolhe_labirinto();
+void le_labirinto(labirinto* L, char* nome);
 
 #endif

@@ -87,7 +87,29 @@ labirinto escolhe_labirinto() {
     free(nomes_arquivos);
 
 	printf("[i] arquivo escolhido: %s\n", arquivo_escolhido);
+
 	labirinto L;
+	le_labirinto(&L, arquivo_escolhido);
+	printa_labirinto(L);
 
     return L;
 }
+void le_labirinto(labirinto* L, char* nome) {
+    char caminho[100];
+    snprintf(caminho, sizeof(caminho), "./salvos/%s", nome);
+
+    FILE* arquivo = fopen(caminho, "r");
+    fscanf(arquivo, "%d %d\n", &L->linhas, &L->colunas);
+    L->celulas = (char**) malloc(L->linhas * sizeof(char*));
+
+    for (int i = 0; i < L->linhas; i++) {
+        L->celulas[i] = (char*) malloc(L->colunas * sizeof(char));
+        for (int j = 0; j < L->colunas; j++) {
+            fscanf(arquivo, "%c", &L->celulas[i][j]);
+        }
+		fgetc(arquivo);
+    }
+
+    fclose(arquivo);
+}
+
