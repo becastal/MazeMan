@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+int di_2[] = {-2, 2, 0, 0};
+int dj_2[] = {0, 0, 2, -2};
+int di_1[] = {-1, 1, 0, 0};
+int dj_1[] = {0, 0, 1, -1};
+
 void gera_labirinto() {
 	puts("[+] novo labirinto!");
 	labirinto novo_labirinto;
@@ -68,6 +73,9 @@ void gera_labirinto() {
 				break;	
 			case 1:
 				algoritmo_sidewinder(&novo_labirinto);
+				break;	
+			case 2:
+				algoritmo_aldous_border(&novo_labirinto);
 				break;	
 			default:
 				puts("[e] selecao invalida!");
@@ -149,4 +157,55 @@ int posicao_valida(labirinto* L, int i, int j) {
 int posicao_aleatoria(labirinto* L, int tipo) {
     int min = 1, max = (tipo ? L->linhas - 2 : L->colunas - 2);
     return min + 2 * (rand() % ((max - min) / 2 + 1));
+}
+
+void algoritmo_aldous_border(labirinto* L) {
+	// pra uma posicao aleatoria, seguir escolhendo movimentos aleatorios ate ter visitado todos os vertices.
+	// se voce entrar em uma posicao nao antes visitada, voce liga as duas celulas cortando a parede, se nao,
+	// voce so segue. bizarro tentar achar a complexidade disso. existe um mundo que esse algoritmo nunca acaba;
+	// complexidade: O(sei_la * ruim);
+	// na real a complexidade media fica ~O(nmlogn);
+	srand(time(NULL));
+
+    int contador_visitados = 0;
+    
+    int** visitado = (int**) malloc(L->linhas * sizeof(int*));
+    for (int i = 0; i < L->linhas; i++) {
+        visitado[i] = (int*) malloc(L->colunas * sizeof(int));
+        for (int j = 0; j < L->colunas; j++) {
+            visitado[i][j] = 0;
+            if (i % 2 == 1 && j % 2 == 1) {
+                contador_visitados++;
+            }
+        }
+    }
+
+    int posicao_linha = posicao_aleatoria(L, 1);
+    int posicao_coluna = posicao_aleatoria(L, 0);
+    contador_visitados--;
+    visitado[posicao_linha][posicao_coluna] = 1;
+
+    while (contador_visitados > 0) {
+        int movimento = rand() % 4;
+        int nova_posicao_linha = posicao_linha + di_2[movimento];
+        int nova_posicao_coluna = posicao_coluna + dj_2[movimento];
+
+        if (!posicao_valida(L, nova_posicao_linha, nova_posicao_coluna)) {
+            continue;
+        }
+
+        if (!visitado[nova_posicao_linha][nova_posicao_coluna]) {
+            L->celulas[(posicao_linha + nova_posicao_linha) / 2][(posicao_coluna + nova_posicao_coluna) / 2] = ' ';
+            visitado[nova_posicao_linha][nova_posicao_coluna] = 1;
+            contador_visitados--;
+        }
+
+        posicao_linha = nova_posicao_linha;
+        posicao_coluna = nova_posicao_coluna;
+    }
+
+    for (int i = 0; i < L->linhas; i++) {
+        free(visitado[i]);
+    }
+    free(visitado);
 }
