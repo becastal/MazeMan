@@ -50,7 +50,7 @@ void gera_labirinto() {
 
 	puts("[!] possiveis algoritmos para gerar o labirinto");
 	puts("[0] algoritmo da binary tree.");
-	puts("[1] algoritmo de sinewinder.");
+	puts("[1] algoritmo de sidewinder.");
 	puts("[2] algoritmo de aldous-border.");
 	puts("[3] algoritmo de hunt-and-kill.");
 	puts("[4] algoritmo de backtracking.");
@@ -65,6 +65,9 @@ void gera_labirinto() {
 		switch (selecao) {
 			case 0:
 				algoritmo_binary_tree(&novo_labirinto);
+				break;	
+			case 1:
+				algoritmo_sidewinder(&novo_labirinto);
 				break;	
 			default:
 				puts("[e] selecao invalida!");
@@ -109,4 +112,32 @@ void algoritmo_binary_tree(labirinto* L) {
 			}
 		}
 	}
+}
+
+void algoritmo_sidewinder(labirinto* L) {
+	// pra cada posicao da matriz, tira ou a parede de cima ou a parede da direita, mas quando existe uma mudanca
+	// na sequencia (por exemplo, lado -> lado -> direita), ele nao corta a direita da posicao que eu to, mas sim
+	// uma aleatoria do componente conexo anterior;
+	// complexidade O(nm);
+	srand(time(NULL));
+	
+    for (int posicao_linha = 1; posicao_linha < L->linhas; posicao_linha += 2) {
+        int inicio_run = 1;
+        
+        for (int posicao_coluna = 1; posicao_coluna < L->colunas; posicao_coluna += 2) {
+            int libera_direita = rand() & 1;
+            
+            if (posicao_coluna == L->colunas - 2) libera_direita = 0;
+            if (posicao_linha == 1) libera_direita = 1;
+			if (posicao_linha == 1 && posicao_coluna == L->colunas - 2) break;
+
+            if (libera_direita) {
+                L->celulas[posicao_linha][posicao_coluna + 1] = ' ';
+            } else {
+                int posicao_norte = inicio_run + 2 * (rand() % ((posicao_coluna - inicio_run) / 2 + 1));
+                L->celulas[posicao_linha - 1][posicao_norte] = ' ';
+                inicio_run = posicao_coluna + 2;
+            }
+        }
+    }
 }
