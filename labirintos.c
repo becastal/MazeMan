@@ -80,6 +80,9 @@ void gera_labirinto() {
 			case 3:
 				algoritmo_hunt_and_kill(&novo_labirinto);
 				break;
+			case 4:
+				algoritmo_backtracking(&novo_labirinto);
+				break;
 			default:
 				puts("[e] selecao invalida!");
 				ok_algoritmo = 0;
@@ -213,6 +216,29 @@ void algoritmo_aldous_border(labirinto* L) {
     free(visitado);
 }
 
+void algoritmo_backtracking(labirinto* L) {
+	// particularmente acho o mais elegante. bem parecido com dfs, mas cortando o caminho que comeco;
+	// comeco no topo e sigo em direcoes aleatorias. se nao consigo mais sair, volto pra onde foi originado
+	// essa posicao que estou agora (o inicio desse caminho sem volta);
+	// complexidade: O(nm);
+	srand(time(NULL));
+
+    int** visitado = (int**) malloc(L->linhas * sizeof(int*));
+    for (int i = 0; i < L->linhas; i++) {
+        visitado[i] = (int*) malloc(L->colunas * sizeof(int));
+        for (int j = 0; j < L->colunas; j++) {
+            visitado[i][j] = 0;
+        }
+    }
+
+	backtracking(visitado, L, 1, 1);
+
+	for (int i = 0; i < L->linhas; i++) {
+		free(visitado[i]);
+	}
+	free(visitado);
+}
+
 void algoritmo_hunt_and_kill(labirinto* L) {
 	// bem proximo do aldous border, mas ele evita entrar nas que ele ja viu,
 	// buscando uma nao vista antes e recomecando a busca.
@@ -295,4 +321,29 @@ void algoritmo_hunt_and_kill(labirinto* L) {
 		free(visitado[i]);
 	}
 	free(visitado);
+}
+
+void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
+	visitado[linha][coluna] = 1;
+
+	int direcao[] = {0, 1, 2, 3}; // randomizando a direcao que ele anda a cada passo
+	for (int k = 0; k < 4; k++) {
+		int r = rand() % 4;
+		
+		direcao[k] ^= direcao[r]; // jeito maneiro de trocar os valores no indice [r] e no indice[k]
+		direcao[r] ^= direcao[k]; // com triplo xor. obrigado gabriel santana.
+		direcao[k] ^= direcao[r];
+	}
+
+	for (int k = 0; k < 4; k++) {
+		int movimento = direcao[k];
+		int nova_linha = linha + di_2[movimento];
+		int nova_coluna = coluna + dj_2[movimento];
+
+		if (posicao_valida(L, nova_linha, nova_coluna) && 
+			!visitado[nova_linha][nova_coluna]) {
+			L->celulas[(linha + nova_linha) / 2][(coluna + nova_coluna) / 2] = ' '; 
+			backtracking(visitado, L, nova_linha, nova_coluna);
+		}
+	}
 }
