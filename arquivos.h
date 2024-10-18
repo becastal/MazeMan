@@ -4,5 +4,6 @@
 #include "labirintos.h"
 
 void salva_labirinto(labirinto* L);
+labirinto escolhe_labirinto();
 
 #endif

@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include "labirintos.h"
+#include "arquivos.h"
 
 int main() {
 	int sair = 0;
+	labirinto L = escolhe_labirinto();
 	
 	while (!sair) {
 		puts("[+] menu inicial.");

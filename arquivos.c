@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 #include "arquivos.h"
 #include "labirintos.h"
 
@@ -31,4 +32,62 @@ void salva_labirinto(labirinto* L) {
 
     fclose(arquivo);
     printf("[i] labirinto salvo em: %s\n", nome_completo);
+}
+labirinto escolhe_labirinto() {
+    struct dirent *entrada;
+    DIR *pasta;
+    int quantidade_arquivos = 0;
+
+    pasta = opendir("./salvos/");
+    while ((entrada = readdir(pasta)) != NULL) {
+        if (strcmp(entrada->d_name, ".") != 0 && strcmp(entrada->d_name, "..") != 0) {
+            quantidade_arquivos++;
+        }
+    }
+    closedir(pasta);
+
+    if (quantidade_arquivos == 0) {
+        printf("[i] Nenhum arquivo encontrado.\n");
+        exit(1);
+    }
+
+    char **nomes_arquivos = malloc(sizeof(char*) * quantidade_arquivos);
+
+    pasta = opendir("./salvos/");
+    int i = 0;
+    while ((entrada = readdir(pasta)) != NULL) {
+        if (strcmp(entrada->d_name, ".") != 0 && strcmp(entrada->d_name, "..") != 0) {
+            nomes_arquivos[i] = malloc(strlen(entrada->d_name) + 1);
+            strcpy(nomes_arquivos[i], entrada->d_name);
+            i++;
+        }
+    }
+    closedir(pasta);
+
+    printf("[i] arquivos encontrados:\n");
+    for (int i = 0; i < quantidade_arquivos; i++) {
+        printf("[%02d] %s\n", i + 1, nomes_arquivos[i]);
+    }
+
+    int escolha = -1;
+    char arquivo_escolhido[100];
+    int ok_nome = 0;
+    while (!ok_nome) {
+        printf("[?] informe o indice do arquivo escolhido: ");
+        scanf("%d", &escolha);
+
+		ok_nome = escolha >= 1 && escolha <= quantidade_arquivos;
+		if (!ok_nome) puts("[e] escolhe invalida!");
+    }
+	strcpy(arquivo_escolhido, nomes_arquivos[escolha - 1]);
+
+    for (int i = 0; i < quantidade_arquivos; i++) {
+        free(nomes_arquivos[i]);
+    }
+    free(nomes_arquivos);
+
+	printf("[i] arquivo escolhido: %s\n", arquivo_escolhido);
+	labirinto L;
+
+    return L;
 }
