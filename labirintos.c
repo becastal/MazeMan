@@ -145,3 +145,8 @@ void algoritmo_sidewinder(labirinto* L) {
 int posicao_valida(labirinto* L, int i, int j) {
     return i >= 1 && j >= 1 && i < L->linhas - 1 && j < L->colunas - 1;
 }
+
+int posicao_aleatoria(labirinto* L, int tipo) {
+    int min = 1, max = (tipo ? L->linhas - 2 : L->colunas - 2);
+    return min + 2 * (rand() % ((max - min) / 2 + 1));
+}
