@@ -171,10 +171,22 @@ void algoritmo_sidewinder(labirinto* L) {
 }
 
 int posicao_valida(labirinto* L, int i, int j) {
+	// retorna 1 se i e j estiverem dentro dos limite do labirinto.
+
     return i >= 1 && j >= 1 && i < L->linhas - 1 && j < L->colunas - 1;
 }
 
 int posicao_aleatoria(labirinto* L, int tipo) {
+	// retorna uma "posicao impar" aleatoria em um labirinto. tipo deve ser 1 para retornar uma linha impar 
+	// e 0 para retornar uma coluna impar aleatoria.
+	//
+	// "posicao impar" siginifica uma posicao entre as paredes, mas nao incluinto o caminho entre elas
+	// ######### 
+	// #a# # b #
+	// # #   # # nesse exemplo, 'a' eh uma "posicao impar" que essa funcao pode retornar e 'b' nao.
+	// #   # # #
+	// #########
+
     int min = 1, max = (tipo ? L->linhas - 2 : L->colunas - 2);
     return min + 2 * (rand() % ((max - min) / 2 + 1));
 }
@@ -228,29 +240,6 @@ void algoritmo_aldous_border(labirinto* L) {
         free(visitado[i]);
     }
     free(visitado);
-}
-
-void algoritmo_backtracking(labirinto* L) {
-	// particularmente acho o mais elegante. bem parecido com dfs, mas cortando o caminho que comeco;
-	// comeco no topo e sigo em direcoes aleatorias. se nao consigo mais sair, volto pra onde foi originado
-	// essa posicao que estou agora (o inicio desse caminho sem volta);
-	// complexidade: O(nm);
-	srand(time(NULL));
-
-    int** visitado = (int**) malloc(L->linhas * sizeof(int*));
-    for (int i = 0; i < L->linhas; i++) {
-        visitado[i] = (int*) malloc(L->colunas * sizeof(int));
-        for (int j = 0; j < L->colunas; j++) {
-            visitado[i][j] = 0;
-        }
-    }
-
-	backtracking(visitado, L, 1, 1);
-
-	for (int i = 0; i < L->linhas; i++) {
-		free(visitado[i]);
-	}
-	free(visitado);
 }
 
 void algoritmo_hunt_and_kill(labirinto* L) {
@@ -334,14 +323,39 @@ void algoritmo_hunt_and_kill(labirinto* L) {
 	free(visitado);
 }
 
+void algoritmo_backtracking(labirinto* L) {
+	// particularmente acho o mais elegante. bem parecido com dfs, mas cortando o caminho que comeco;
+	// comeco no topo e sigo em direcoes aleatorias. se nao consigo mais sair, volto pra onde foi originado
+	// essa posicao que estou agora (o inicio desse caminho sem volta);
+	// complexidade: O(nm);
+	srand(time(NULL));
+
+    int** visitado = (int**) malloc(L->linhas * sizeof(int*));
+    for (int i = 0; i < L->linhas; i++) {
+        visitado[i] = (int*) malloc(L->colunas * sizeof(int));
+        for (int j = 0; j < L->colunas; j++) {
+            visitado[i][j] = 0;
+        }
+    }
+
+	backtracking(visitado, L, 1, 1);
+
+	for (int i = 0; i < L->linhas; i++) {
+		free(visitado[i]);
+	}
+	free(visitado);
+}
+
 void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
+	// funcao recursiva que eh parte de algoritmo_backtracking.
+	
 	visitado[linha][coluna] = 1;
 
 	int direcao[] = {0, 1, 2, 3}; // randomizando a direcao que ele anda a cada passo
 	for (int k = 0; k < 4; k++) {
 		int r = rand() % 4;
 		
-		direcao[k] ^= direcao[r]; // jeito maneiro de trocar os valores no indice [r] e no indice[k]
+		direcao[k] ^= direcao[r]; // jeito maneiro de trocar os valores no indice [r] e no indice [k]
 		direcao[r] ^= direcao[k]; // com triplo xor. obrigado gabriel santana.
 		direcao[k] ^= direcao[r];
 	}
