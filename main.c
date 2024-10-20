@@ -28,7 +28,7 @@ int main() {
 			case 2:
 				break;
 			case 4:
-				pacmaniza_game();
+				// pacmaniza_game();
 				break;
 			default:
 				puts("[e] selecao invalida!");
