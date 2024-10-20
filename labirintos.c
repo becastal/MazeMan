@@ -85,7 +85,8 @@ void gera_labirinto() {
 			case 4:
 				algoritmo_backtracking(&novo_labirinto);
 				break;
-			case 5:												//caso em que é criado um labirinto e colocado decente para o mazeman
+			case 5:
+			//caso em que é criado um labirinto e colocado decente para o mazeman
 				algoritmo_aldous_border(&novo_labirinto);
 				pacmaniza(&novo_labirinto);
 				break;
