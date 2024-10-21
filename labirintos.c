@@ -2,6 +2,8 @@
 #include "arquivos.h"
 #include <stdlib.h>
 #include <time.h>
+#include <termios.h>
+#include <unistd.h>
 
 int di_2[] = {-2, 2, 0, 0};
 int dj_2[] = {0, 0, 2, -2};
@@ -41,9 +43,16 @@ void gera_labirinto() {
 	
 	novo_labirinto.linhas = 2 * novo_labirinto.linhas + 1;
 	novo_labirinto.colunas = 2 * novo_labirinto.colunas + 1;
+
 	novo_labirinto.celulas = (char**) malloc(novo_labirinto.linhas * sizeof(char*));
+	novo_labirinto.ordem_construcao = (int**) malloc(novo_labirinto.linhas * sizeof(int*));
 	for (int i = 0; i < novo_labirinto.linhas; i++) {
 		novo_labirinto.celulas[i] = (char*) malloc(novo_labirinto.colunas * sizeof(char));
+		novo_labirinto.ordem_construcao[i] = (int*) malloc(novo_labirinto.colunas * sizeof(int));
+
+		for (int j = 0; j < novo_labirinto.colunas; j++) {
+			novo_labirinto.ordem_construcao[i][j] = -1;
+		}
 	}
 
 	for (int i = 0; i < novo_labirinto.linhas; i++) {
@@ -60,7 +69,7 @@ void gera_labirinto() {
 	puts("[2] algoritmo de aldous-border.");
 	puts("[3] algoritmo de hunt-and-kill.");
 	puts("[4] algoritmo de backtracking.");
-	puts("[5] algoritmo de Pacmaniza");
+	puts("[5] algoritmo de pacmaniza");
 
 	int ok_algoritmo = 0;
 	while (!ok_algoritmo) {
@@ -85,8 +94,9 @@ void gera_labirinto() {
 			case 4:
 				algoritmo_backtracking(&novo_labirinto);
 				break;
-			case 5:												//caso em que é criado um labirinto e colocado decente para o mazeman
-				algoritmo_aldous_border(&novo_labirinto);
+			case 5:
+				// caso em que é criado um labirinto e colocado decente para o mazeman
+				algoritmo_backtracking(&novo_labirinto);
 				pacmaniza(&novo_labirinto);
 				break;
 			default:
@@ -95,21 +105,7 @@ void gera_labirinto() {
 		}
 	}
 
-	// char selecao_pacman;
-	// int ok_pacman = 0;
-
-	// while (!ok_pacman) {
-	// 	printf("[?] fazer esse labirinto ser decente para pacman (s/n)? ");
-	// 	scanf(" %c", &selecao_pacman);
-
-	// 	ok_pacman = (selecao_pacman == 's' || selecao_pacman == 'S' ||
-	// 				 selecao_pacman == 'n' || selecao_pacman == 'N');
-	// 	if (!ok_pacman) puts("[e] informe 's' ou 'n'.");
-	// }
-
-	// if (selecao_pacman == 's' || selecao_pacman == 'S') {
-	// 	pacmaniza(&novo_labirinto);
-	// }
+	ver_construcao(&novo_labirinto);
 
 	char selecao_salvar;
 	int ok_salvar = 0;
@@ -131,8 +127,10 @@ void gera_labirinto() {
 	
 	for (int i = 0; i < novo_labirinto.linhas; i++) {
 		free(novo_labirinto.celulas[i]);
+		free(novo_labirinto.ordem_construcao[i]);
 	}
 	free(novo_labirinto.celulas);
+	free(novo_labirinto.ordem_construcao);
 }
 
 void printa_labirinto(labirinto L) {
@@ -142,56 +140,6 @@ void printa_labirinto(labirinto L) {
 		}
 		printf("\n");
 	}
-}
-
-void algoritmo_binary_tree(labirinto* L) {
-	// pra cada posicao da matriz, tira ou a parede da direita ou a parede de baixo;
-	// complexidade O(nm);
-	srand(time(NULL));
-
-	for (int posicao_linha = 1; posicao_linha < L->linhas; posicao_linha += 2) {
-		for (int posicao_coluna = 1; posicao_coluna < L->colunas; posicao_coluna += 2) {
-			int libera_direita = rand() & 1;
-
-			if (posicao_linha == L->linhas - 2) libera_direita = 1;
-			if (posicao_coluna == L->colunas - 2) libera_direita = 0;
-			if (posicao_linha == L->linhas - 2 && posicao_coluna == L->colunas - 2) break;
-
-			if (libera_direita) {
-				L->celulas[posicao_linha][posicao_coluna + 1] = ' ';
-			} else {
-				L->celulas[posicao_linha + 1][posicao_coluna] = ' ';
-			}
-		}
-	}
-}
-
-void algoritmo_sidewinder(labirinto* L) {
-	// pra cada posicao da matriz, tira ou a parede de cima ou a parede da direita, mas quando existe uma mudanca
-	// na sequencia (por exemplo, lado -> lado -> direita), ele nao corta a direita da posicao que eu to, mas sim
-	// uma aleatoria do componente conexo anterior;
-	// complexidade O(nm);
-	srand(time(NULL));
-	
-    for (int posicao_linha = 1; posicao_linha < L->linhas; posicao_linha += 2) {
-        int inicio_run = 1;
-        
-        for (int posicao_coluna = 1; posicao_coluna < L->colunas; posicao_coluna += 2) {
-            int libera_direita = rand() & 1;
-            
-            if (posicao_coluna == L->colunas - 2) libera_direita = 0;
-            if (posicao_linha == 1) libera_direita = 1;
-			if (posicao_linha == 1 && posicao_coluna == L->colunas - 2) break;
-
-            if (libera_direita) {
-                L->celulas[posicao_linha][posicao_coluna + 1] = ' ';
-            } else {
-                int posicao_norte = inicio_run + 2 * (rand() % ((posicao_coluna - inicio_run) / 2 + 1));
-                L->celulas[posicao_linha - 1][posicao_norte] = ' ';
-                inicio_run = posicao_coluna + 2;
-            }
-        }
-    }
 }
 
 int posicao_valida(labirinto* L, int i, int j) {
@@ -214,6 +162,67 @@ int posicao_aleatoria(labirinto* L, int tipo) {
     int min = 1, max = (tipo ? L->linhas - 2 : L->colunas - 2);
     return min + 2 * (rand() % ((max - min) / 2 + 1));
 }
+
+void algoritmo_binary_tree(labirinto* L) {
+	// pra cada posicao da matriz, tira ou a parede da direita ou a parede de baixo;
+	// complexidade O(nm);
+	srand(time(NULL));
+
+	L->contagem_construcao = 0;
+	for (int posicao_linha = 1; posicao_linha < L->linhas; posicao_linha += 2) {
+		for (int posicao_coluna = 1; posicao_coluna < L->colunas; posicao_coluna += 2) {
+			L->ordem_construcao[posicao_linha][posicao_coluna] = L->contagem_construcao++;
+
+			int libera_direita = rand() & 1;
+
+			if (posicao_linha == L->linhas - 2) libera_direita = 1;
+			if (posicao_coluna == L->colunas - 2) libera_direita = 0;
+			if (posicao_linha == L->linhas - 2 && posicao_coluna == L->colunas - 2) break;
+
+			if (libera_direita) {
+				L->celulas[posicao_linha][posicao_coluna + 1] = ' ';
+				L->ordem_construcao[posicao_linha][posicao_coluna + 1] = L->contagem_construcao++;
+			} else {
+				L->celulas[posicao_linha + 1][posicao_coluna] = ' ';
+				L->ordem_construcao[posicao_linha + 1][posicao_coluna] = L->contagem_construcao++;
+			}
+		}
+	}
+}
+
+void algoritmo_sidewinder(labirinto* L) {
+	// pra cada posicao da matriz, tira ou a parede de cima ou a parede da direita, mas quando existe uma mudanca
+	// na sequencia (por exemplo, lado -> lado -> direita), ele nao corta a direita da posicao que eu to, mas sim
+	// uma aleatoria do componente conexo anterior;
+	// complexidade O(nm);
+	srand(time(NULL));
+	
+	L->contagem_construcao = 0;
+    for (int posicao_linha = 1; posicao_linha < L->linhas; posicao_linha += 2) {
+        int inicio_run = 1;
+        
+        for (int posicao_coluna = 1; posicao_coluna < L->colunas; posicao_coluna += 2) {
+            int libera_direita = rand() & 1;
+
+			L->ordem_construcao[posicao_linha][posicao_coluna] = L->contagem_construcao++;
+            
+            if (posicao_coluna == L->colunas - 2) libera_direita = 0;
+            if (posicao_linha == 1) libera_direita = 1;
+			if (posicao_linha == 1 && posicao_coluna == L->colunas - 2) break;
+
+            if (libera_direita) {
+                L->celulas[posicao_linha][posicao_coluna + 1] = ' ';
+                L->ordem_construcao[posicao_linha][posicao_coluna + 1] = L->contagem_construcao++;
+            } else {
+                int posicao_norte = inicio_run + 2 * (rand() % ((posicao_coluna - inicio_run) / 2 + 1));
+                L->celulas[posicao_linha - 1][posicao_norte] = ' ';
+                L->ordem_construcao[posicao_linha - 1][posicao_norte] = L->contagem_construcao++;
+                inicio_run = posicao_coluna + 2;
+            }
+        }
+    }
+}
+
 
 void algoritmo_aldous_border(labirinto* L) {
 	// pra uma posicao aleatoria, seguir escolhendo movimentos aleatorios ate ter visitado todos os vertices.
@@ -241,6 +250,7 @@ void algoritmo_aldous_border(labirinto* L) {
     contador_visitados--;
     visitado[posicao_linha][posicao_coluna] = 1;
 
+	L->contagem_construcao = 0;
     while (contador_visitados > 0) {
         int movimento = rand() % 4;
         int nova_posicao_linha = posicao_linha + di_2[movimento];
@@ -250,8 +260,15 @@ void algoritmo_aldous_border(labirinto* L) {
             continue;
         }
 
+		if (L->ordem_construcao[posicao_linha][posicao_coluna] == -1) {
+			L->ordem_construcao[posicao_linha][posicao_coluna] = L->contagem_construcao;	
+		}
+		L->contagem_construcao++;
+
         if (!visitado[nova_posicao_linha][nova_posicao_coluna]) {
-            L->celulas[(posicao_linha + nova_posicao_linha) / 2][(posicao_coluna + nova_posicao_coluna) / 2] = ' ';
+			int paredei = (posicao_linha + nova_posicao_linha) / 2, paredej = (posicao_coluna + nova_posicao_coluna) / 2;
+            L->celulas[paredei][paredej] = ' ';
+			L->ordem_construcao[paredei][paredej] = L->contagem_construcao++;
             visitado[nova_posicao_linha][nova_posicao_coluna] = 1;
             contador_visitados--;
         }
@@ -289,6 +306,7 @@ void algoritmo_hunt_and_kill(labirinto* L) {
     int posicao_coluna = posicao_aleatoria(L, 0);
     contador_visitados--;
     visitado[posicao_linha][posicao_coluna] = 1;
+	L->contagem_construcao = 0;
 
 	int direcoes_vistas = 0; 
     while (contador_visitados > 0) {
@@ -307,6 +325,7 @@ void algoritmo_hunt_and_kill(labirinto* L) {
 								posicao_linha = i;
 								posicao_coluna = j;
 								L->celulas[(i + ni) / 2][(j + nj) / 2] = ' ';
+								L->ordem_construcao[(i + ni) / 2][(j + nj) / 2] = L->contagem_construcao++;
 								hunt_ok = 1;
 								break;
 							}
@@ -332,13 +351,16 @@ void algoritmo_hunt_and_kill(labirinto* L) {
         }
 
         if (!visitado[nova_posicao_linha][nova_posicao_coluna]) {
-            L->celulas[(posicao_linha + nova_posicao_linha) / 2][(posicao_coluna + nova_posicao_coluna) / 2] = ' ';
+			int paredei = (posicao_linha + nova_posicao_linha) / 2, paredej = (posicao_coluna + nova_posicao_coluna) / 2;
+            L->celulas[paredei][paredej] = ' ';
+			L->ordem_construcao[paredei][paredej] = L->contagem_construcao++;
             visitado[nova_posicao_linha][nova_posicao_coluna] = 1;
             contador_visitados--;
         }
 
         posicao_linha = nova_posicao_linha;
         posicao_coluna = nova_posicao_coluna;
+		L->ordem_construcao[posicao_linha][posicao_coluna] = L->contagem_construcao++;
     }
 
 	for (int i = 0; i < L->linhas; i++) {
@@ -362,7 +384,8 @@ void algoritmo_backtracking(labirinto* L) {
         }
     }
 
-	backtracking(visitado, L, 1, 1);
+	L->contagem_construcao = 0;
+	backtracking(visitado, L, posicao_aleatoria(L, 1), posicao_aleatoria(L, 0));
 
 	for (int i = 0; i < L->linhas; i++) {
 		free(visitado[i]);
@@ -384,6 +407,7 @@ void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
 		direcao[k] ^= direcao[r];
 	}
 
+	L->ordem_construcao[linha][coluna] = L->contagem_construcao++;
 	for (int k = 0; k < 4; k++) {
 		int movimento = direcao[k];
 		int nova_linha = linha + di_2[movimento];
@@ -391,14 +415,18 @@ void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
 
 		if (posicao_valida(L, nova_linha, nova_coluna) && 
 			!visitado[nova_linha][nova_coluna]) {
-			L->celulas[(linha + nova_linha) / 2][(coluna + nova_coluna) / 2] = ' '; 
+			int paredei = (linha + nova_linha) / 2, paredej = (coluna + nova_coluna) / 2;
+			L->celulas[paredei][paredej] = ' '; 
+			L->ordem_construcao[paredei][paredej] = L->contagem_construcao++;
 			backtracking(visitado, L, nova_linha, nova_coluna);
 		}
 	}
-}
+} 
 
-void pacmaniza(labirinto *L){
-	for (int feito = 0; feito < 20;) {				//numero padrao de conexões, pra ser mais facil (Arrumar dps)
+void pacmaniza(labirinto* L){
+	int quantidade_novas_conexoes = (L->linhas + L->colunas) / 2;
+	// TODO: numero padrao de conexões, pra ser mais facil (Arrumar dps). analisar qual a melhor relacao.
+	for (int feito = 0; feito < quantidade_novas_conexoes;) {
 		int linha = posicao_aleatoria(L, 1);
 		int coluna = posicao_aleatoria(L, 0);
 
@@ -414,6 +442,7 @@ void pacmaniza(labirinto *L){
 			feito++;
 		}
 	}
+
 	// espelhando o labirinto;
 	for (int i = 0; i < L->linhas; i++) {
 		for (int j = L->colunas-1; j >= L->colunas / 2; j--) {
@@ -421,5 +450,82 @@ void pacmaniza(labirinto *L){
 		}
 	}
 	
+	// garantindo que nao exista nenhuma ilha
+	for (int i = 1; i < L->linhas - 1; i++) {
+		for (int j = 1; j < L->colunas - 1; j++) {
+			int eh_ilha = L->celulas[i][j] == '#';
+
+			// as 4 direcoes tem que ter ' '
+			for (int k = 0; k < 4 && eh_ilha; k++) {
+				eh_ilha &= L->celulas[i + di_1[k]][j + dj_1[k]] == ' ';
+			}
+		
+			if (eh_ilha) {
+				L->celulas[i][j] = ' ';
+			}
+		}
+	}
+}
+void esperar_enter(int sim) {
+    struct termios termios_p;
+    tcgetattr(STDIN_FILENO, &termios_p);
+
+    if (sim) {
+        termios_p.c_lflag |= (ICANON | ECHO);
+    } else {
+        termios_p.c_lflag &= ~(ICANON | ECHO);
+    }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &termios_p);
+}
+
+void ver_construcao(labirinto *L) {
+	// cada algoritmo gerador de labirinto guarda a ordem com que as celulas foram visitadas e paredes foram quebradas.
+    esperar_enter(0);
+
+    int etapa = 0, sair = 0;
+    while (!sair) {
+        system("clear");
+		printf("[i] construcao do labirinto (etapa %d/%d): \n", etapa, L->contagem_construcao);
+
+        for (int i = 0; i < L->linhas; i++) {
+            for (int j = 0; j < L->colunas; j++) {
+				printf("%s", (etapa + 1 == L->ordem_construcao[i][j] ? "\033[32m" : "\033[0m"));
+
+				if ((L->ordem_construcao[i][j] == etapa + 1 || L->ordem_construcao[i][j] == etapa) 
+				 	&& i & 1 && j & 1) {
+					printf("\033[32m@\033[0m");
+					continue;
+				}
+
+                if (L->ordem_construcao[i][j] == -1 || L->ordem_construcao[i][j] > etapa) {
+                    printf("%c", (i & 1 && j & 1 ? ' ' : '#'));
+                    continue;
+                }
+
+				printf("%c", L->celulas[i][j]);
+			}
+            printf("\n");
+        }
+
+		printf("[?] pressione: \n"
+			"[0] para terminar visualizacao.\n"
+			"[>] (seta p/ direita) para avancar etapa.\n"
+			"[<] (seta p/ esquerda) para retornar etapa.\n");
+
+        char c = getchar();
+        if (c == '\033') {
+            c = getchar();
+            if (c == '[') {
+                c = getchar();
+                if (c == 'C' && etapa < L->contagem_construcao) etapa++;
+                else if (c == 'D' && etapa > 0) etapa--;
+            }
+        } else if (c == '0') {
+            sair = 1;
+        }
+    }
+
+    esperar_enter(1);
 }
 
