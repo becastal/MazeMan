@@ -33,6 +33,7 @@ void salva_labirinto(labirinto* L) {
     fclose(arquivo);
     printf("[i] labirinto salvo em: %s\n", nome_completo);
 }
+
 labirinto escolhe_labirinto() {
     struct dirent *entrada;
     DIR *pasta;
@@ -90,10 +91,10 @@ labirinto escolhe_labirinto() {
 
 	labirinto L;
 	le_labirinto(&L, arquivo_escolhido);
-	printa_labirinto(L);
 
     return L;
 }
+
 void le_labirinto(labirinto* L, char* nome) {
     char caminho[100];
     snprintf(caminho, sizeof(caminho), "./salvos/%s", nome);
@@ -112,12 +113,11 @@ void le_labirinto(labirinto* L, char* nome) {
 
     fclose(arquivo);
 }
+
 /*
 void salvar_bin(labirinto* L){
     FILE* arq = fopen("usuarios/usuario.bin", "wb");
-    fwrite(nome[], sizeof(nome),1,arq);
-    fwrite(pontuacao, sizeof(int),1,arq);
-}
+    fwrite(nome[], sizeof(nome),1,arq); fwrite(pontuacao, sizeof(int),1,arq); }
 
 void ler_bin(labirinto* L){
     FILE* arq = fopen("usuarios/usuario.bin", "rb");

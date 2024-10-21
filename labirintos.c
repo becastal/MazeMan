@@ -63,6 +63,12 @@ void gera_labirinto() {
 		}
 	}
 
+	novo_labirinto.celulas[0][1] = ' ';
+	novo_labirinto.celulas[0][novo_labirinto.colunas-2] = ' ';
+	novo_labirinto.celulas[novo_labirinto.linhas-1][1] = ' ';
+	novo_labirinto.celulas[novo_labirinto.linhas-1][novo_labirinto.colunas-2] = ' ';
+
+
 	puts("[!] possiveis algoritmos para gerar o labirinto");
 	puts("[0] algoritmo da binary tree.");
 	puts("[1] algoritmo de sidewinder.");
@@ -144,8 +150,7 @@ void printa_labirinto(labirinto L) {
 
 int posicao_valida(labirinto* L, int i, int j) {
 	// retorna 1 se i e j estiverem dentro dos limite do labirinto.
-
-    return i >= 1 && j >= 1 && i < L->linhas - 1 && j < L->colunas - 1;
+    return (i >= 0 && i < L->linhas && j >= 0 && j < L->colunas);
 }
 
 int posicao_aleatoria(labirinto* L, int tipo) {
@@ -508,10 +513,13 @@ void ver_construcao(labirinto *L) {
             printf("\n");
         }
 
-		printf("[?] pressione: \n"
-			"[0] para terminar visualizacao.\n"
-			"[>] (seta p/ direita) para avancar etapa.\n"
-			"[<] (seta p/ esquerda) para retornar etapa.\n");
+		puts("[?] pressione: ");
+		puts("[0] para terminar visualizacao.");
+		puts("[i] para ir para o inicio.");
+		puts("[f] para ir para o fim.");
+		puts("[>] (seta p/ direita) para avancar etapa.");
+		puts("[<] (seta p/ esquerda) para retornar etapa.");
+		printf("...");
 
         char c = getchar();
         if (c == '\033') {
@@ -523,9 +531,197 @@ void ver_construcao(labirinto *L) {
             }
         } else if (c == '0') {
             sair = 1;
-        }
+        } else if (c == 'i') {
+			etapa = 0;
+        } else if (c == 'f') {
+			etapa = L->contagem_construcao;
+		}
     }
 
     esperar_enter(1);
 }
 
+void resolve_labirinto() {
+    labirinto L = escolhe_labirinto();
+
+	puts("[i] opcoes para resolucao:");
+	puts("[0] de uma ponta a outra.");
+	puts("[1] achar uma saida a partir de uma posicao aleatoria.");
+	puts("[2] definir inicio e fim do trajeto.");
+
+	int inicio_i, inicio_j;
+	int fim_i, fim_j;
+	
+	int ok_modo = 0, selecao;
+	while (!ok_modo) {
+		printf("[?] selecione uma das opcoes: ");
+		scanf("%d", &selecao);
+
+		ok_modo = 1;
+		switch (selecao) {
+			case 0:
+				inicio_i = 0;
+				inicio_j = 1;
+				fim_i = L.linhas-1;
+				fim_j = L.colunas-2;
+				break;
+			case 1:
+				inicio_i = posicao_aleatoria(&L, 1);
+				inicio_j = posicao_aleatoria(&L, 0);
+				fim_i = (rand() & 1 ? 0 : L.linhas-1);
+				fim_j = (rand() & 1 ? 1 : L.colunas-2);
+				break;
+			case 2:
+				int ok_inicio = 0, ok_fim = 0;
+				printa_labirinto(L);
+				while (!ok_inicio) {
+					printf("[?] indique a linha do inicio: ");
+					scanf("%d", &inicio_i);
+					printf("[?] indique a coluna do inicio: ");
+					scanf("%d", &inicio_j);
+
+					ok_inicio = posicao_valida(&L, inicio_i, inicio_j) && L.celulas[inicio_i][inicio_j] == ' '; 
+					if (!ok_inicio) puts("[e] informe uma celula valida para o inicio!");
+				}
+				while (!ok_fim) {
+					printf("[?] indique a linha do fim");
+					scanf("%d", &fim_i);
+					printf("[?] indique a coluna do fim");
+					scanf("%d", &fim_j);
+
+					ok_fim = posicao_valida(&L, fim_i, fim_j) && L.celulas[fim_i][fim_j] == ' '; 
+					if (!ok_fim) puts("[e] informe uma celula valida para o fim!");
+				}
+				break;
+			default:
+				puts("[e] selecao invalida!");
+				ok_modo = 0;
+		}
+	}
+	
+    int** distancia = (int**) malloc(L.linhas * sizeof(int*));
+    for (int i = 0; i < L.linhas; i++) {
+        distancia[i] = (int*) malloc(L.colunas * sizeof(int));
+        for (int j = 0; j < L.colunas; j++) {
+            distancia[i][j] = -1;
+        }
+    }
+
+	distancia[inicio_i][inicio_j] = 0;
+	resolve_dfs(distancia, &L, inicio_i, inicio_j);
+	ver_resolucao(&L, distancia, inicio_i, inicio_j, fim_i, fim_j);
+
+    for (int i = 0; i < L.linhas; i++) {
+        free(L.celulas[i]);
+		free(distancia[i]);
+    }
+	free(distancia);
+    free(L.celulas);
+}
+
+void resolve_dfs(int** distancia, labirinto* L, int i, int j) {
+	for (int k = 0; k < 4; k++) {
+		int ni = i + di_1[k], nj = j + dj_1[k];
+		if (posicao_valida(L, ni, nj) && distancia[ni][nj] == -1 && L->celulas[ni][nj] != '#') {
+			distancia[ni][nj] = distancia[i][j] + 1;
+			resolve_dfs(distancia, L, ni, nj);
+		}
+	}
+}
+
+void ver_resolucao(labirinto* L, int** distancia, int inicio_i, int inicio_j, int fim_i, int fim_j) {
+    esperar_enter(0);
+
+    int** eh_caminho = (int**) malloc(L->linhas * sizeof(int*));
+    for (int i = 0; i < L->linhas; i++) {
+        eh_caminho[i] = (int*) malloc(L->colunas * sizeof(int));
+        for (int j = 0; j < L->colunas; j++) {
+            eh_caminho[i][j] = 0;
+        }
+    }
+	
+	int posicao_linha = fim_i, posicao_coluna = fim_j;
+	while (distancia[posicao_linha][posicao_coluna] >= 0) {
+		eh_caminho[posicao_linha][posicao_coluna] = '1';
+		
+		for (int i = 0; i < 4; i++) {
+			int nova_posicao_linha = posicao_linha + di_1[i], nova_posicao_coluna = posicao_coluna + dj_1[i];
+			if (posicao_valida(L, nova_posicao_linha, nova_posicao_coluna) &&
+				distancia[nova_posicao_linha][nova_posicao_coluna] + 1 == distancia[posicao_linha][posicao_coluna]) {
+				posicao_linha = nova_posicao_linha;
+				posicao_coluna = nova_posicao_coluna;
+				break;
+			}
+		}
+	}
+
+    int etapa = 0, sair = 0;
+    while (!sair) {
+        system("clear");
+		printf("[i] resolucao do labirinto (etapa %d/%d): \n", etapa, distancia[fim_i][fim_j]);
+
+        for (int i = 0; i < L->linhas; i++) {
+            for (int j = 0; j < L->colunas; j++) {
+				if (i == inicio_i && j == inicio_j) {
+					printf("\033[31mI\033[0m");
+					continue;
+				}
+				if (i == fim_i && j == fim_j) {
+					printf("\033[31mF\033[0m");
+					continue;
+				}
+
+				printf("%s", (etapa == distancia[i][j] ? "\033[32m" : "\033[0m"));
+
+				if (etapa == distancia[fim_i][fim_j] && eh_caminho[i][j]) {
+					printf("\033[32m*\033[0m");
+					continue;
+				}
+
+				if (distancia[i][j] == -1 || distancia[i][j] > etapa) {
+					printf("%c", L->celulas[i][j]);
+					continue;
+				}
+				
+				if (distancia[i][j] == etapa) {
+					printf("@");
+					continue;
+				}
+
+
+				printf(".");
+			}
+            printf("\n");
+        }
+
+		puts("[?] pressione: ");
+		puts("[0] para terminar visualizacao.");
+		puts("[i] para ir para o inicio.");
+		puts("[f] para ir para o fim.");
+		puts("[>] (seta p/ direita) para avancar etapa.");
+		puts("[<] (seta p/ esquerda) para retornar etapa.");
+		printf("...");
+
+        char c = getchar();
+        if (c == '\033') {
+            c = getchar();
+            if (c == '[') {
+                c = getchar();
+                if (c == 'C' && etapa < distancia[fim_i][fim_j]) etapa++;
+                else if (c == 'D' && etapa > 0) etapa--;
+            }
+        } else if (c == '0') {
+            sair = 1;
+        } else if (c == 'i') {
+			etapa = 0;
+        } else if (c == 'f') {
+			etapa = distancia[fim_i][fim_j];
+		}
+    }
+
+	for (int i = 0; i < L->linhas; i++) {
+		free(eh_caminho[i]);
+	}
+	free(eh_caminho);
+    esperar_enter(1);
+}

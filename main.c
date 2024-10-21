@@ -25,6 +25,7 @@ int main() {
 				gera_labirinto();
 				break;
 			case 2:
+				resolve_labirinto();
 				break;
 			case 4:
 				// pacmaniza_game();

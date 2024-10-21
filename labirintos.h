@@ -27,4 +27,8 @@ void backtracking(int** visitado, labirinto* L, int linha, int coluna);
 void pacmaniza(labirinto* L);
 void ver_construcao(labirinto* L);
 
+void resolve_labirinto();
+void resolve_dfs(int** distancia, labirinto* L, int i, int j);
+void ver_resolucao(labirinto* L, int** distancia, int inicio_i, int inicio_j, int fim_i, int fim_j);
+
 #endif
