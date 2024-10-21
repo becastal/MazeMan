@@ -6,6 +6,7 @@ extern int di_2[];
 extern int dj_2[];
 extern int di_1[];
 extern int dj_1[];
+extern char* parede[];
 
 typedef struct {
 	int linhas, colunas;
@@ -14,10 +15,12 @@ typedef struct {
 	int contagem_construcao;
 } labirinto;
 
-void gera_labirinto();
 void printa_labirinto(labirinto L);
 int posicao_valida(labirinto* L, int i, int j);
 int posicao_aleatoria(labirinto* L, int tipo);
+char* caracter_parede(labirinto* L, int i, int j);
+
+void gera_labirinto();
 void algoritmo_binary_tree(labirinto* L);
 void algoritmo_sidewinder(labirinto* L);
 void algoritmo_aldous_border(labirinto* L);

@@ -10,6 +10,25 @@ int dj_2[] = {0, 0, 2, -2};
 int di_1[] = {-1, 1, 0, 0};
 int dj_1[] = {0, 0, 1, -1};
 
+char* parede[] = {
+	" ", //  1: 0000 [ ] (nada)
+	"\u2551", //  2: 0001 [║] (sul) 
+	"\u2551", //  3: 0010 [║] (norte) 
+	"\u2551", //  4: 0011 [║] (norte + sul) 
+	"\u2550", //  5: 0100 [═] (leste) 
+	"\u255A", //  6: 0101 [╚] (leste + sul) 
+	"\u2554", //  7: 0110 [╔] (leste + norte) 
+	"\u2560", //  8: 0111 [╠] (leste + norte + sul) 
+	"\u2550", //  9: 1000 [═] (oeste) 
+	"\u255D", // 10: 1001 [╝] (oeste + sul) 
+	"\u2557", // 11: 1010 [╗] (oeste + norte) 
+	"\u2563", // 12: 1011 [╣] (oeste + norte + sul) 
+	"\u2550", // 13: 1100 [═] (oeste + leste) 
+	"\u2569", // 14: 1101 [╩] (oeste + leste + sul) 
+	"\u2566", // 15: 1110 [╦] (oeste + leste + norte) 
+	"\u256C"  // 16: 1111 [╬] (tudo) 
+};
+
 void gera_labirinto() {
 	puts("[+] novo labirinto!");
 	labirinto novo_labirinto;
@@ -142,10 +161,30 @@ void gera_labirinto() {
 void printa_labirinto(labirinto L) {
 	for (int i = 0; i < L.linhas; i++) {
 		for (int j = 0; j < L.colunas; j++) {
-			printf("%c", L.celulas[i][j]);
+			printf("%s", caracter_parede(&L, i, j));
 		}
 		printf("\n");
 	}
+}
+
+char* caracter_parede(labirinto* L, int i, int j) {
+	// retorna que caracter deve ser printado pra posicao a partir das conexoes que a 
+	// parede atual tem com o entorno. o char* parede[], global tem todas as 16 possiveis
+	// configuracoes que uma parede pode ter. 16 porque 16 == 2**4.
+	
+	if (L->celulas[i][j] == ' ') return " ";			
+
+	int cidx = 0;
+	for (int k = 0; k < 4; k++) {
+		int ni = i + di_1[k], nj = j + dj_1[k];
+		
+		if (!posicao_valida(L, ni, nj)) continue;
+
+		if (L->celulas[ni][nj] == '#') {
+			cidx |= (1 << k);
+		}
+	}
+	return parede[cidx];
 }
 
 int posicao_valida(labirinto* L, int i, int j) {
@@ -220,8 +259,7 @@ void algoritmo_sidewinder(labirinto* L) {
                 L->ordem_construcao[posicao_linha][posicao_coluna + 1] = L->contagem_construcao++;
             } else {
                 int posicao_norte = inicio_run + 2 * (rand() % ((posicao_coluna - inicio_run) / 2 + 1));
-                L->celulas[posicao_linha - 1][posicao_norte] = ' ';
-                L->ordem_construcao[posicao_linha - 1][posicao_norte] = L->contagem_construcao++;
+                L->celulas[posicao_linha - 1][posicao_norte] = ' '; L->ordem_construcao[posicao_linha - 1][posicao_norte] = L->contagem_construcao++;
                 inicio_run = posicao_coluna + 2;
             }
         }
@@ -488,38 +526,53 @@ void ver_construcao(labirinto *L) {
 	// cada algoritmo gerador de labirinto guarda a ordem com que as celulas foram visitadas e paredes foram quebradas.
     esperar_enter(0);
 
+    labirinto temp = *L;
+
+    temp.celulas = (char**) malloc(L->linhas * sizeof(char*));
+    for (int i = 0; i < L->linhas; i++) {
+        temp.celulas[i] = (char*) malloc(L->colunas * sizeof(char));
+        for (int j = 0; j < L->colunas; j++) {
+            temp.celulas[i][j] = L->celulas[i][j];
+        }
+    }
+
     int etapa = 0, sair = 0;
     while (!sair) {
         system("clear");
-		printf("[i] construcao do labirinto (etapa %d/%d): \n", etapa, L->contagem_construcao);
+        printf("[i] construcao do labirinto (etapa %d/%d): \n", etapa, L->contagem_construcao);
 
         for (int i = 0; i < L->linhas; i++) {
             for (int j = 0; j < L->colunas; j++) {
-				printf("%s", (etapa + 1 == L->ordem_construcao[i][j] ? "\033[32m" : "\033[0m"));
-
-				if ((L->ordem_construcao[i][j] == etapa + 1 || L->ordem_construcao[i][j] == etapa) 
-				 	&& i & 1 && j & 1) {
-					printf("\033[32m@\033[0m");
-					continue;
-				}
-
                 if (L->ordem_construcao[i][j] == -1 || L->ordem_construcao[i][j] > etapa) {
-                    printf("%c", (i & 1 && j & 1 ? ' ' : '#'));
+                    temp.celulas[i][j] = (i & 1 && j & 1 ? ' ' : '#');
+                    continue;
+                }
+                temp.celulas[i][j] = L->celulas[i][j];
+            }
+        }
+
+        for (int i = 0; i < L->linhas; i++) {
+            for (int j = 0; j < L->colunas; j++) {
+                printf("%s", (etapa + 1 == L->ordem_construcao[i][j] ? "\033[32m" : "\033[0m"));
+
+                if ((L->ordem_construcao[i][j] == etapa + 1 || L->ordem_construcao[i][j] == etapa) 
+                    && i & 1 && j & 1) {
+                    printf("\033[32m@\033[0m");
                     continue;
                 }
 
-				printf("%c", L->celulas[i][j]);
-			}
+				printf("%s", caracter_parede(&temp, i, j));
+            }
             printf("\n");
         }
 
-		puts("[?] pressione: ");
-		puts("[0] para terminar visualizacao.");
-		puts("[i] para ir para o inicio.");
-		puts("[f] para ir para o fim.");
-		puts("[>] (seta p/ direita) para avancar etapa.");
-		puts("[<] (seta p/ esquerda) para retornar etapa.");
-		printf("...");
+        puts("[?] pressione: ");
+        puts("[0] para terminar visualizacao.");
+        puts("[i] para ir para o inicio.");
+        puts("[f] para ir para o fim.");
+        puts("[>] (seta p/ direita) para avancar etapa.");
+        puts("[<] (seta p/ esquerda) para retornar etapa.");
+        printf("...");
 
         char c = getchar();
         if (c == '\033') {
@@ -532,11 +585,16 @@ void ver_construcao(labirinto *L) {
         } else if (c == '0') {
             sair = 1;
         } else if (c == 'i') {
-			etapa = 0;
+            etapa = 0;
         } else if (c == 'f') {
-			etapa = L->contagem_construcao;
-		}
+            etapa = L->contagem_construcao;
+        }
     }
+
+    for (int i = 0; i < L->linhas; i++) {
+        free(temp.celulas[i]);
+    }
+    free(temp.celulas);
 
     esperar_enter(1);
 }
@@ -679,7 +737,7 @@ void ver_resolucao(labirinto* L, int** distancia, int inicio_i, int inicio_j, in
 				}
 
 				if (distancia[i][j] == -1 || distancia[i][j] > etapa) {
-					printf("%c", L->celulas[i][j]);
+					printf("%s", caracter_parede(L, i, j));
 					continue;
 				}
 				
