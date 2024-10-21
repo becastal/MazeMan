@@ -5,7 +5,6 @@
 
 int main() {
 	int sair = 0;
-	labirinto L = escolhe_labirinto();
 	
 	while (!sair) {
 		puts("[+] menu inicial.");

@@ -2,9 +2,16 @@
 #define labirintos_h
 #include <stdio.h>
 
+extern int di_2[];
+extern int dj_2[];
+extern int di_1[];
+extern int dj_1[];
+
 typedef struct {
 	int linhas, colunas;
 	char** celulas;
+	int** ordem_construcao;
+	int contagem_construcao;
 } labirinto;
 
 void gera_labirinto();
@@ -18,5 +25,6 @@ void algoritmo_hunt_and_kill(labirinto* L);
 void algoritmo_backtracking(labirinto* L);
 void backtracking(int** visitado, labirinto* L, int linha, int coluna); 
 void pacmaniza(labirinto* L);
+void ver_construcao(labirinto* L);
 
 #endif
