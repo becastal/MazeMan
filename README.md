@@ -18,7 +18,7 @@
 <table>
   <tr>
     <td align="center">
-        <img src="https://tiinside.com.br/wp-content/uploads/2024/01/Elon_Musk_Colorado_2022_cropped2-e1704673616178.jpg" width="100px;" alt="Foto do Bernardo"/><br>
+        <img src="img/mano bernas.PNG" width="120px;" alt="Foto do Bernardo"/><br>
         <sub>
           <b>Bernardo</b>
           <br>
@@ -26,7 +26,7 @@
         </sub>
     </td>
     <td align="center">
-        <img src="https://s2.glbimg.com/FUcw2usZfSTL6yCCGj3L3v3SpJ8=/smart/e.glbimg.com/og/ed/f/original/2019/04/25/zuckerberg_podcast.jpg" width="100px;" alt="Foto do Gabriel"/><br>
+        <img src="img/eu.PNG" width="120px;" alt="Foto do Gabriel"/><br>
         <sub>
           <b>Gabriel</b>
           <br>
@@ -34,7 +34,7 @@
         </sub>
     </td>
     <td align="center">
-        <img src="https://miro.medium.com/max/360/0*1SkS3mSorArvY9kS.jpg" width="100px;" alt="Foto do Kaio"/><br>
+        <img src="img/kaio.PNG" width="120px;" alt="Foto do Kaio"/><br>
         <sub>
           <b>Kaio</b>
           <br>
