@@ -3,7 +3,7 @@
 <img src= "img/image (15).png" width = 600>
 
 ## 🚀 Objetivo do Projeto
--  (aqui oh)
+-  Nosso objetivo com o <b>MazeMan</b> como um Projeto livre da disciplina de Desenvolvimento de Algoritmos (CC2632) é o desenvolvimento pessoal e criativo em algoritmos de forma gamificada a partir de tópicos que achamos interessantes. O programa apresenta um resolvedor de labirintos com <b>3 algoritmos</b> distintos e um extra que seria uma releitura do clássico "PacMan" <b>100% jogavel</b> com mapas distintos e criados pelo usuário. 
 
 
 ## 💻 Compilação e Execução do MazeMan
