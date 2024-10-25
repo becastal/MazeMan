@@ -113,6 +113,7 @@ void le_labirinto(labirinto* L, char* nome) {
     fclose(arquivo);
 }
 
+
 void salva_labirinto_mazeman(labirinto* L) {
     char nome_arquivo[100];
     char nome_completo[120];
@@ -141,6 +142,27 @@ void salva_labirinto_mazeman(labirinto* L) {
     fclose(arquivo);
     printf("[i] labirinto do MazeMan salvo em: %s\n", nome_completo);
 }
+
+=======
+void le_labirinto_mazeman(labirinto* L, char* nome) {
+    char caminho[100];
+    snprintf(caminho, sizeof(caminho), "./mazeman/%s", nome);
+
+    FILE* arquivo = fopen(caminho, "r");
+    fscanf(arquivo, "%d %d\n", &L->linhas, &L->colunas);
+    L->celulas = (char**) malloc(L->linhas * sizeof(char*));
+
+    for (int i = 0; i < L->linhas; i++) {
+        L->celulas[i] = (char*) malloc(L->colunas * sizeof(char));
+        for (int j = 0; j < L->colunas; j++) {
+            fscanf(arquivo, "%c", &L->celulas[i][j]);
+        }
+		fgetc(arquivo);
+    }
+
+    fclose(arquivo);
+}
+
 
 /*
 void salvar_bin(labirinto* L){
