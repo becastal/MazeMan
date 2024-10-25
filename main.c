@@ -11,8 +11,7 @@ int main() {
 		puts("[0] sair.");
 		puts("[1] criar labiririntos.");
 		puts("[2] resolver labirintos.");
-		puts("[3] resolver caminhos.");
-		puts("[4] jogar MazeMan.");
+		puts("[3] jogar MazeMan.");
 
 		printf("\n[?] selecione uma das opcoes: ");
 		int selecao;
@@ -25,9 +24,10 @@ int main() {
 				gera_labirinto();
 				break;
 			case 2:
+				escolhe_labirinto();
 				break;
-			case 4:
-				// pacmaniza_game();
+			case 3:
+				pacmaniza_game();
 				break;
 			default:
 				puts("[e] selecao invalida!");

@@ -423,6 +423,36 @@ void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
 	}
 } 
 
+void pacmaniza_game(labirinto* L){
+	int voltar = 0
+	while (!voltar){
+
+	puts("[+] Bem-Vindo(a) ao MazeMan!");
+	puts("[0] Voltar");
+	puts("[1] Criar um mapa");
+	puts("[2] Jogar com um mapa ja criado");
+	printf("\n[?] Selecione uma das opções: ");
+	int escolha;
+	scanf("%d", escolha);
+	switch (escolha)
+	{
+	case 0:
+		voltar = 1;
+		break;
+	case 1:
+		backtracking();
+		pacmaniza();
+		break;
+	case 2:
+		escolhe_labirinto()
+		pacmaniza()
+	default:
+		puts("[e] Seleção Invalida!")
+		break;
+	}
+	}
+}
+
 void pacmaniza(labirinto* L){
 	int quantidade_novas_conexoes = (L->linhas + L->colunas) / 2;
 	// TODO: numero padrao de conexões, pra ser mais facil (Arrumar dps). analisar qual a melhor relacao.
