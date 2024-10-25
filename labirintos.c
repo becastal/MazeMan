@@ -536,10 +536,13 @@ void ver_construcao(labirinto *L) {
         }
     }
 
+	system("clear");
+	printa_labirinto(*L);
+	
+
     int etapa = 0, sair = 0;
     while (!sair) {
-        system("clear");
-        printf("[i] construcao do labirinto (etapa %d/%d): \n", etapa, L->contagem_construcao);
+        // printf("[i] construcao do labirinto (etapa %d/%d): \n", etapa, L->contagem_construcao);
 
         for (int i = 0; i < L->linhas; i++) {
             for (int j = 0; j < L->colunas; j++) {
@@ -553,15 +556,13 @@ void ver_construcao(labirinto *L) {
 
         for (int i = 0; i < L->linhas; i++) {
             for (int j = 0; j < L->colunas; j++) {
-                printf("%s", (etapa + 1 == L->ordem_construcao[i][j] ? "\033[32m" : "\033[0m"));
-
                 if ((L->ordem_construcao[i][j] == etapa + 1 || L->ordem_construcao[i][j] == etapa) 
                     && i & 1 && j & 1) {
-                    printf("\033[32m@\033[0m");
-                    continue;
+					printf("\033[32m\x1B[32m\033[%d;%dH@\x1B[0m\033[0m", i+1, j+1);
+					continue;
                 }
-
-				printf("%s", caracter_parede(&temp, i, j));
+				
+				printf("\033[%d;%dH%s", i+1, j+1, caracter_parede(&temp, i, j));
             }
             printf("\n");
         }
@@ -712,42 +713,41 @@ void ver_resolucao(labirinto* L, int** distancia, int inicio_i, int inicio_j, in
 			}
 		}
 	}
+	system("clear");
+	printa_labirinto(*L);
 
     int etapa = 0, sair = 0;
     while (!sair) {
-        system("clear");
-		printf("[i] resolucao do labirinto (etapa %d/%d): \n", etapa, distancia[fim_i][fim_j]);
-
         for (int i = 0; i < L->linhas; i++) {
             for (int j = 0; j < L->colunas; j++) {
+				if (distancia[i][j] == -1) continue;
+
 				if (i == inicio_i && j == inicio_j) {
-					printf("\033[31mI\033[0m");
-					continue;
-				}
-				if (i == fim_i && j == fim_j) {
-					printf("\033[31mF\033[0m");
+					printf("\x1B[32m\033[%d;%dHI\x1B[0m", i+1, j+1);
 					continue;
 				}
 
-				printf("%s", (etapa == distancia[i][j] ? "\033[32m" : "\033[0m"));
+				if (i == fim_i && j == fim_j) {
+					printf("\x1B[32m\033[%d;%dHF\x1B[0m", i+1, j+1);
+					continue;
+				}
 
 				if (etapa == distancia[fim_i][fim_j] && eh_caminho[i][j]) {
-					printf("\033[32m*\033[0m");
+					printf("\x1B[32m\033[%d;%dH*\x1B[0m", i+1, j+1);
 					continue;
 				}
 
-				if (distancia[i][j] == -1 || distancia[i][j] > etapa) {
-					printf("%s", caracter_parede(L, i, j));
-					continue;
-				}
-				
-				if (distancia[i][j] == etapa) {
-					printf("@");
+				if (distancia[i][j] > etapa) {
+					printf("\033[%d;%dH ", i+1, j+1);
 					continue;
 				}
 
+				if (distancia[i][j] == etapa && etapa != distancia[fim_i][fim_j]) {
+					printf("\x1B[32m\033[%d;%dH@\x1B[0m", i+1, j+1);
+					continue;
+				}
 
-				printf(".");
+				printf("\033[%d;%dH.", i+1, j+1);
 			}
             printf("\n");
         }
