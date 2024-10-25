@@ -69,7 +69,6 @@ void gera_labirinto() {
 	puts("[2] algoritmo de aldous-border.");
 	puts("[3] algoritmo de hunt-and-kill.");
 	puts("[4] algoritmo de backtracking.");
-	puts("[5] algoritmo de pacmaniza");
 
 	int ok_algoritmo = 0;
 	while (!ok_algoritmo) {
@@ -93,11 +92,6 @@ void gera_labirinto() {
 				break;
 			case 4:
 				algoritmo_backtracking(&novo_labirinto);
-				break;
-			case 5:
-				// caso em que é criado um labirinto e colocado decente para o mazeman
-				algoritmo_backtracking(&novo_labirinto);
-				pacmaniza(&novo_labirinto);
 				break;
 			default:
 				puts("[e] selecao invalida!");
