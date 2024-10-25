@@ -447,6 +447,8 @@ void pacmaniza_game(labirinto* L){
 		escolhe_labirinto_mazeman()
 		pacmaniza()
 		break;
+=======
+
 	default:
 		puts("[e] Seleção Invalida!")
 		break;
@@ -454,6 +456,9 @@ void pacmaniza_game(labirinto* L){
 	}
 }
 
+
+
+=======
 
 void pacmaniza(labirinto* L){
 	int quantidade_novas_conexoes = (L->linhas + L->colunas) / 2;
