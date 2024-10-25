@@ -112,6 +112,68 @@ void le_labirinto(labirinto* L, char* nome) {
 
     fclose(arquivo);
 }
+
+labirinto escolhe_labirinto_mazeman() {
+    struct dirent *entrada;
+    DIR *pasta;
+    int quantidade_arquivos = 0;
+
+    pasta = opendir("./mazeman/");
+    while ((entrada = readdir(pasta)) != NULL) {
+        if (strcmp(entrada->d_name, ".") != 0 && strcmp(entrada->d_name, "..") != 0) {
+            quantidade_arquivos++;
+        }
+    }
+    closedir(pasta);
+
+    if (quantidade_arquivos == 0) {
+        printf("[i] Nenhum arquivo encontrado.\n");
+        exit(1);
+    }
+
+    char **nomes_arquivos = malloc(sizeof(char*) * quantidade_arquivos);
+
+    pasta = opendir("./mazeman/");
+    int i = 0;
+    while ((entrada = readdir(pasta)) != NULL) {
+        if (strcmp(entrada->d_name, ".") != 0 && strcmp(entrada->d_name, "..") != 0) {
+            nomes_arquivos[i] = malloc(strlen(entrada->d_name) + 1);
+            strcpy(nomes_arquivos[i], entrada->d_name);
+            i++;
+        }
+    }
+    closedir(pasta);
+
+    printf("[i] arquivos encontrados:\n");
+    for (int i = 0; i < quantidade_arquivos; i++) {
+        printf("[%02d] %s\n", i + 1, nomes_arquivos[i]);
+    }
+
+    int escolha = -1;
+    char arquivo_escolhido[100];
+    int ok_nome = 0;
+    while (!ok_nome) {
+        printf("[?] informe o indice do arquivo escolhido: ");
+        scanf("%d", &escolha);
+
+		ok_nome = escolha >= 1 && escolha <= quantidade_arquivos;
+		if (!ok_nome) puts("[e] escolhe invalida!");
+    }
+	strcpy(arquivo_escolhido, nomes_arquivos[escolha - 1]);
+
+    for (int i = 0; i < quantidade_arquivos; i++) {
+        free(nomes_arquivos[i]);
+    }
+    free(nomes_arquivos);
+
+	printf("[i] arquivo escolhido: %s\n", arquivo_escolhido);
+
+	labirinto L;
+	le_labirinto_mazeman(&L, arquivo_escolhido);
+	printa_labirinto(L);
+
+    return L;
+}
 /*
 void salvar_bin(labirinto* L){
     FILE* arq = fopen("usuarios/usuario.bin", "wb");
