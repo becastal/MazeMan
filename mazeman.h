@@ -32,5 +32,5 @@ void mazeman_fantasma_move(labirinto L, Fantasma *fant);
 void mazeman_atualizar_print(int i, int j, char conteudo);
 void mazeman_atualizar_mapa(labirinto *L, Mazeman *pac, Fantasma *f, int move_acao, int *pontos_jogador);
 int mazeman_checar_colisao_fantasma(labirinto L, Fantasma *f, Mazeman pac);
-
-
+void non_blocking_input_linux();
+void restore_input_linux();

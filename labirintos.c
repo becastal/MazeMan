@@ -173,6 +173,7 @@ char* caracter_parede(labirinto* L, int i, int j) {
 	// configuracoes que uma parede pode ter. 16 porque 16 == 2**4.
 	
 	if (L->celulas[i][j] == ' ') return " ";			
+	if (L->celulas[i][j] == '.') return ".";			
 
 	int cidx = 0;
 	for (int k = 0; k < 4; k++) {

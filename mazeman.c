@@ -15,7 +15,7 @@ int mazeman_game_loop(labirinto *L){
     fim_de_jogo = 0;
 
     #ifndef _WIN32
-        esperar_enter(0);  // Deixa input do linux sem Enter
+		non_blocking_input_linux();
     #endif
 
     mazeman_spawn(*L, &mazeman);
@@ -24,7 +24,7 @@ int mazeman_game_loop(labirinto *L){
     mazeman_fantasma_spawn(*L, mazeman, &fantasmas[2]);
     mazeman_fantasma_spawn(*L, mazeman, &fantasmas[3]);
 
-    system("cls");
+    system("clear");
     printa_labirinto(*L);
     // Jogo acaba quando move_acao é 2 (mazeman bate no fantasma)
     while(!fim_de_jogo){
@@ -46,12 +46,36 @@ int mazeman_game_loop(labirinto *L){
     #endif
     }
     #ifndef _WIN32
-        esperar_enter(1); // Volta os inputs do linux ao normal
+		restore_input_linux();
     #endif
     mazeman_atualizar_print(L->linhas, 0, '\n');
     printf("Fim de jogo, voce morreu!\n");
     return pontos_jogador;
 }
+
+#ifndef _WIN32
+#include <termios.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+struct termios original_term;
+
+void non_blocking_input_linux() {
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &original_term);
+    term = original_term;
+
+    term.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+
+    fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK);
+}
+
+void restore_input_linux() {
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
+    fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) & ~O_NONBLOCK);
+}
+#endif
 
 void mazeman_atualizar_mapa(labirinto *L, Mazeman *maz, Fantasma *f, int move_acao, int *pontos_jogador){
     int fant_i;

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "labirintos.h"
 #include "arquivos.h"
-
+#include "mazeman.h"
 
 int main() {
 	int sair = 0;
@@ -28,7 +28,10 @@ int main() {
 				resolve_labirinto();
 				break;
 			case 4:
-				// pacmaniza_game();
+				labirinto L;
+				L = escolhe_labirinto();
+				int pontos = mazeman_game_loop(&L);
+				printf("[i] pontos: %d\n", pontos);
 				break;
 			default:
 				puts("[e] selecao invalida!");
