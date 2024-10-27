@@ -15,7 +15,10 @@ int mazeman_game_loop(labirinto *L){
     fim_de_jogo = 0;
 
     mazeman_spawn(*L, &mazeman);
-    // spawnar fantasmas
+    mazeman_fantasma_spawn(*L, mazeman, &fantasmas[0]);
+    mazeman_fantasma_spawn(*L, mazeman, &fantasmas[1]);
+    mazeman_fantasma_spawn(*L, mazeman, &fantasmas[2]);
+    mazeman_fantasma_spawn(*L, mazeman, &fantasmas[3]);
 
     system("cls");
     printa_labirinto(*L);
@@ -29,9 +32,8 @@ int mazeman_game_loop(labirinto *L){
         move_acao = mazeman_movimento_valido(*L, mazeman, direcao);
         mazeman.direcao_olhando = direcao;
 
-        // Atualizar coisas no mapa
-
-        // Checar fim de jogo
+        mazeman_atualizar_mapa(L, &mazeman, fantasmas, move_acao, &pontos_jogador);
+        // Checar colisao com fantasma para ser igual a fim de jogo
 
     #ifdef _WIN32
         Sleep(100);  // Windows
@@ -39,6 +41,7 @@ int mazeman_game_loop(labirinto *L){
         usleep(100000);  // Linux
     #endif
     }
+    mazeman_atualizar_print(L->linhas, 0, '\n');
     printf("Fim de jogo, voce morreu!\n");
     return pontos_jogador;
 }
