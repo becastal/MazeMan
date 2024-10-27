@@ -156,3 +156,41 @@ void mazeman_fantasma_spawn(labirinto L, Mazeman maz, Fantasma *f){
         }
     }
 }
+
+void mazeman_fantasma_move(labirinto L, Fantasma *f){
+    int di_1[] = {-1, 1, 0, 0};
+    int dj_1[] = {0, 0, 1, -1};
+    int fant_i;
+    int fant_j;
+    char posicao_final;
+
+    // Direção atual do fantasma
+    int direcao = f->direcao_olhando;
+    int direcao_permitida = 0; // Checar se precisa mudar ou não direcao
+
+    while(!direcao_permitida){
+        // Posição atual do mazeman + a posicao do proximo frame movendo na direcao que o jogador escolheu
+        fant_i = f->posicao_linha + di_1[direcao];
+        fant_j = f->posicao_coluna + dj_1[direcao];
+
+        // Checa se a posição está dentro do mapa, coloca para mudar de direção
+        if (!posicao_valida(&L, fant_i, fant_j)) direcao_permitida = 0;
+
+        posicao_final = L.celulas[fant_i][fant_j];
+
+        // Checa se vai bater em uma parede, se for coloca para mudar de direção
+        if(posicao_final == '#') direcao_permitida = 0;
+        else{
+            break;
+        }
+
+        // Altera a direcao para uma direção aleatória
+        direcao = rand() % 4;
+    }
+
+    f->posicao_linha = fant_i;
+    f->posicao_coluna = fant_j;
+    f->direcao_olhando = direcao;
+
+    // printf("%d, %d\n", fant->posicao_linha, fant->posicao_coluna);
+}
