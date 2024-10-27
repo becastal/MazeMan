@@ -434,12 +434,12 @@ void pacmaniza_game(labirinto* L){
 		voltar = 1;
 		break;
 	case 1:
-		backtracking();
-		pacmaniza();
+		backtracking(labirinto* L);
+		pacmaniza(labirinto* L);
 		break;
 	case 2:
 		escolhe_labirinto()
-		pacmaniza()
+		pacmaniza(labirinto* L)
 	default:
 		puts("[e] Seleção Invalida!")
 		break;
