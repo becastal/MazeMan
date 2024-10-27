@@ -117,11 +117,12 @@ void le_labirinto(labirinto* L, char* nome) {
 /*
 void salvar_bin(labirinto* L){
     FILE* arq = fopen("usuarios/usuario.bin", "wb");
-    fwrite(nome[], sizeof(nome),1,arq); fwrite(pontuacao, sizeof(int),1,arq); }
+    fwrite(nome[], sizeof(nome),1,arq); 
+    fwrite(pontos_jogador, sizeof(int),1,arq); }
 
 void ler_bin(labirinto* L){
     FILE* arq = fopen("usuarios/usuario.bin", "rb");
     fread(nome[], sizeof(nome),1,arq);
-    fread(pontuacao, sizeof(int),1,arq);
+    fread(pontos_jogador, sizeof(int),1,arq);
 }   
 */
