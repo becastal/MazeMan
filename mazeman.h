@@ -25,4 +25,5 @@ int mazeman_game_loop(labirinto *L);
 int mazeman_obter_input();
 void mazeman_spawn(labirinto L, Mazeman *pac);
 int mazeman_movimento_valido(labirinto L, Mazeman pac, int direcao);
+void mazeman_move(Mazeman *pac, int direcao);
 
