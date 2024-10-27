@@ -1,14 +1,17 @@
 #include "mazeman.h"
 #include "labirintos.h"
 #include "arquivos.h"
+#include <unistd.h>
+#include <string.h>
 
 void mazeman_inicio() {
 	labirinto L;
 
 	puts("[+] seja bem-vindo a MazeMan!");
 	puts("[0] sair.");
-	puts("[1] jogar mapa novo.");
+	puts("[1] jogar mapa aleatorio novo.");
 	puts("[2] jogar em mapa ja gerado.");
+	puts("[3] ver pontuacoes.");
 
 	int ok_escolha = 0, selecao;
 	while (!ok_escolha) {
@@ -20,6 +23,7 @@ void mazeman_inicio() {
 			case 0:
 				return;
 			case 1:
+				strcpy(L.nome, "mapa aleatorio");
 				L.linhas = 2 * 10 + 1, L.colunas = 2 * 30 + 1;
 				L.celulas = (char**) malloc(L.linhas * sizeof(char*));
 				L.ordem_construcao = (int**) malloc(L.linhas * sizeof(int*));
@@ -38,6 +42,9 @@ void mazeman_inicio() {
 			case 2:
 				L = escolhe_labirinto();
 				break;
+			case 3: 
+				mazeman_pontuacoes();
+				return;
 			default:
 				ok_escolha = 0;
 				puts("[e] selecao invalida!");
@@ -45,7 +52,23 @@ void mazeman_inicio() {
 	}
 
 	int pontos = mazeman_game_loop(&L);
-	// TODO: salvar pontos e nome em arquivo bin	
+
+	char selecao_salvar;
+	int ok_salvar = 0;
+
+	while (!ok_salvar) {
+		printf("[?] salvar pontuacao (s/n)? ");
+		scanf(" %c", &selecao_salvar);
+
+		ok_salvar = (selecao_salvar == 's' || selecao_salvar == 'S' ||
+					 selecao_salvar == 'n' || selecao_salvar == 'N');
+		if (!ok_salvar) puts("[e] informe 's' ou 'n'.");
+	}
+
+	if (selecao_salvar == 's' || selecao_salvar == 'S') {
+		mazeman_salvar_pontuacao(pontos, &L);
+	}
+
 
 	for (int i = 0; i < L.linhas; i++) {
 		free(L.celulas[i]);
@@ -357,4 +380,39 @@ int mazeman_checar_colisao_fantasma(labirinto L, Fantasma *f, Mazeman maz){
         }
     }
     return 0;
+}
+
+void mazeman_pontuacoes() {
+    int quantidade_pontuacoes;
+    pontuacao* P = le_pontuacoes(&quantidade_pontuacoes);	
+
+    printf("\n%10s ║ %30s ║ %30s\n", "pontos", "nome_usuario", "nome_mapa");
+    printf("═══════════╬════════════════════════════════╬═══════════════════════════════\n");
+
+    for (int i = 0; i < quantidade_pontuacoes; i++) {
+        printf("%10d ║ %30s ║ %30s\n", P[i].pontos, P[i].nome_usuario, P[i].nome_mapa);
+    }
+
+    printf("\nTotal de pontuações: %d\n", quantidade_pontuacoes);
+    salva_pontuacoes(P, quantidade_pontuacoes);
+}
+
+void mazeman_salvar_pontuacao(int pontos, labirinto* L) {
+    int quantidade_pontuacoes;
+    pontuacao* pontuacoes = le_pontuacoes(&quantidade_pontuacoes);
+
+    pontuacoes = realloc(pontuacoes, (quantidade_pontuacoes + 1) * sizeof(pontuacao));
+
+    char nome_nome_usuario[100];
+    printf("[i] informe seu nome: ");
+    scanf("%99s", nome_nome_usuario);
+
+    if (pontuacoes[quantidade_pontuacoes].nome_usuario) {
+        strcpy(pontuacoes[quantidade_pontuacoes].nome_usuario, nome_nome_usuario);
+    }
+    strncpy(pontuacoes[quantidade_pontuacoes].nome_mapa, L->nome, sizeof(pontuacoes[quantidade_pontuacoes].nome_mapa) - 1);
+    pontuacoes[quantidade_pontuacoes].nome_mapa[sizeof(pontuacoes[quantidade_pontuacoes].nome_mapa) - 1] = '\0';
+    pontuacoes[quantidade_pontuacoes].pontos = pontos;
+
+    salva_pontuacoes(pontuacoes, quantidade_pontuacoes + 1);
 }

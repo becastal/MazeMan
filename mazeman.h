@@ -1,9 +1,7 @@
 #include "labirintos.h"
 
 #ifdef _WIN32
-    #include <conio.h>
-    #include <windows.h>
-#else
+    #include <conio.h> #include <windows.h> #else
 #include <unistd.h>
 	#include <termios.h>
 	#include <fcntl.h>
@@ -33,5 +31,7 @@ void mazeman_fantasma_move(labirinto L, Fantasma *fant);
 void mazeman_atualizar_print(int i, int j, char conteudo);
 void mazeman_atualizar_mapa(labirinto *L, Mazeman *pac, Fantasma *f, int move_acao, int *pontos_jogador);
 int mazeman_checar_colisao_fantasma(labirinto L, Fantasma *f, Mazeman pac);
+void mazeman_pontuacoes();
+void mazeman_salvar_pontuacao(int pontos, labirinto* L);
 void non_blocking_input_linux();
 void restore_input_linux();

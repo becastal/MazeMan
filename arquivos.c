@@ -90,6 +90,7 @@ labirinto escolhe_labirinto() {
 	printf("[i] arquivo escolhido: %s\n", arquivo_escolhido);
 
 	labirinto L;
+	strcpy(L.nome, arquivo_escolhido);
 	le_labirinto(&L, arquivo_escolhido);
 
     return L;
@@ -114,15 +115,31 @@ void le_labirinto(labirinto* L, char* nome) {
     fclose(arquivo);
 }
 
-/*
-void salvar_bin(labirinto* L){
-    FILE* arq = fopen("usuarios/usuario.bin", "wb");
-    fwrite(nome[], sizeof(nome),1,arq); 
-    fwrite(pontos_jogador, sizeof(int),1,arq); }
+pontuacao* le_pontuacoes(int* quantidade_pontuacoes) {
+    FILE* arquivo = fopen("pontuacoes.bin", "rb");
+    fread(quantidade_pontuacoes, sizeof(int), 1, arquivo);
 
-void ler_bin(labirinto* L){
-    FILE* arq = fopen("usuarios/usuario.bin", "rb");
-    fread(nome[], sizeof(nome),1,arq);
-    fread(pontos_jogador, sizeof(int),1,arq);
-}   
-*/
+    pontuacao* P = malloc(*quantidade_pontuacoes * sizeof(pontuacao));
+    if (P) {
+        fread(P, sizeof(pontuacao), *quantidade_pontuacoes, arquivo);
+    }
+    fclose(arquivo);
+
+    return P;
+}
+
+void salva_pontuacoes(pontuacao* P, int quantidade_pontuacoes) {
+    FILE* arquivo = fopen("pontuacoes.bin", "wb");
+    fwrite(&quantidade_pontuacoes, sizeof(int), 1, arquivo);
+
+	if (!quantidade_pontuacoes) {
+		fclose(arquivo);
+		return;
+	}
+
+    fwrite(P, sizeof(pontuacao), quantidade_pontuacoes, arquivo);
+
+    free(P);
+    fclose(arquivo);
+}
+

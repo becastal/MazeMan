@@ -10,6 +10,7 @@ extern int dj_1[];
 extern char* parede[];
 
 typedef struct {
+	char nome[100];
 	int linhas, colunas;
 	char** celulas;
 	int** ordem_construcao;
