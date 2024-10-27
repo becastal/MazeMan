@@ -43,6 +43,8 @@ int mazeman_game_loop(labirinto *L){
     return pontos_jogador;
 }
 
+void mazeman_atualizar_mapa(labirinto *L, Mazeman *pac, Fantasma *f, int move_acao, int *pontos_jogador);
+
 int mazeman_obter_input() {
 #ifdef _WIN32
     if (_kbhit()) {
