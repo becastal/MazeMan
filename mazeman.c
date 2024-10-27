@@ -14,7 +14,7 @@ int mazeman_game_loop(labirinto *L){
     pontos_jogador = 0;
     fim_de_jogo = 0;
 
-    // Spawnar mazeman
+    mazeman_spawn(*L, &mazeman);
     // spawnar fantasmas
 
     system("cls");
@@ -97,3 +97,13 @@ int mazeman_movimento_valido(labirinto L, Mazeman maz, int direcao){
     }
 
 }
+
+void mazeman_move(Mazeman *maz, int direcao){
+    // NORTE, SUL, LESTE, OESTE EM ORDEM
+    int di_1[] = {-1, 1, 0, 0};
+    int dj_1[] = {0, 0, 1, -1};
+
+    maz->posicao_linha += di_1[direcao];
+    maz->posicao_coluna += dj_1[direcao];
+}
+
