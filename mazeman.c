@@ -40,3 +40,17 @@ int mazeman_game_loop(labirinto *L){
     printf("Fim de jogo, voce morreu!\n");
     return pontos_jogador;
 }
+
+int mazeman_obter_input() {
+#ifdef _WIN32
+    if (_kbhit()) {
+        return _getch();
+    }
+#else
+    int ch = getchar();
+        if (ch != EOF) {
+            return ch;
+        }
+#endif
+    return -1;  // Nenhum input
+}

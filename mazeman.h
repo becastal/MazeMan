@@ -1,3 +1,5 @@
+#include "labirintos.h"
+
 #ifdef _WIN32
     #include <conio.h>
     #include <windows.h>
@@ -20,3 +22,5 @@ typedef struct {
 } Fantasma;
 
 int mazeman_game_loop(labirinto *L);
+
+int mazeman_obter_input();
