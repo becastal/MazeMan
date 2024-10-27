@@ -55,20 +55,22 @@ int mazeman_obter_input() {
     return -1;  // Nenhum input
 }
 
-int mazeman_obter_direcao(char input, Mazeman maz){
-    if (input == 'W' || input == 'w'){
-        return 0;
-    }
-    else if (input == 'S' || input == 's'){
-        return 1;
-    }
-    else if (input == 'D' || input == 'd'){
-        return 2;
-    }
-    else if (input == 'A' || input == 'a'){
-        return 3;
-    }
-    else{
-        return maz.direcao_olhando;
+void mazeman_spawn(labirinto L, Mazeman *maz){
+    int maz_pos_i;
+    int maz_pos_j;
+
+    // Define uma direcao padrao pro mazeman
+    maz->direcao_olhando = 3;
+
+    // Obtem uma posicao valida para spawnar o mazeman
+    while(1){
+        maz_pos_i = posicao_aleatoria(&L, 1);
+        maz_pos_j = posicao_aleatoria(&L, 0);
+        if (L.celulas[maz_pos_i][maz_pos_j] == ' '){
+            maz->posicao_linha = maz_pos_i;
+            maz->posicao_coluna = maz_pos_j;
+            break;
+        }
     }
 }
+
