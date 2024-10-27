@@ -25,9 +25,13 @@
 	-	Aqui você tem a opção de escolher entre 5 algoritmos de resolução e criação de labirintos diferentes.
  	-	Depois de escolher cada algoritmo aparecerá um preview do labirinto criado e uma opção de salvar ou não o arquivo
 -	**1.1 Resolver labirinto**
-	-	a
+	-	Nesta opção, é mostrado todos os labirintos salvos pelo usuário, o qual, deve escolher um deles para ser resolvido
 -	**1.2 Jogar MazeMan**
-	-	a
+	-	Ao selecionar essa opção, o usuário tem a opção de jogar com um mapa ja criado para o MazeMan ou Criar um.
+   	-	Em Criar um labirinto para o Mazeman, o labirinto é criado e salvo em uma pasta, e logo em seguida o jogo é iniciado.
+	-	Na opção de Jogar com um mapa ja criado o usuário tem que escolher entre os labirintos que criou, podendo jogar qualquer um deles novamente.
+  ### 2. Como Jogar? 
+-	s
 
 ## | 🤝 Participantes do Grupo |
 <table>
