@@ -54,3 +54,21 @@ int mazeman_obter_input() {
 #endif
     return -1;  // Nenhum input
 }
+
+int mazeman_obter_direcao(char input, Mazeman maz){
+    if (input == 'W' || input == 'w'){
+        return 0;
+    }
+    else if (input == 'S' || input == 's'){
+        return 1;
+    }
+    else if (input == 'D' || input == 'd'){
+        return 2;
+    }
+    else if (input == 'A' || input == 'a'){
+        return 3;
+    }
+    else{
+        return maz.direcao_olhando;
+    }
+}
