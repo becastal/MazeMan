@@ -194,3 +194,7 @@ void mazeman_fantasma_move(labirinto L, Fantasma *f){
 
     // printf("%d, %d\n", fant->posicao_linha, fant->posicao_coluna);
 }
+
+void mazeman_atualizar_print(int i, int j, char conteudo){
+    printf("\033[%d;%dH%c", i+1, j+1, conteudo);
+}
