@@ -5,7 +5,7 @@
 void mazeman_inicio() {
 	labirinto L;
 
-	puts("[+] seja bem-vindo a MazeMan!");
+	puts("[!] seja bem-vindo a MazeMan!");
 	puts("[0] sair.");
 	puts("[1] jogar mapa novo.");
 	puts("[2] jogar em mapa ja gerado.");
@@ -22,17 +22,13 @@ void mazeman_inicio() {
 			case 1:
 				L.linhas = 2 * 10 + 1, L.colunas = 2 * 30 + 1;
 				L.celulas = (char**) malloc(L.linhas * sizeof(char*));
-				L.ordem_construcao = (int**) malloc(L.linhas * sizeof(int*));
 				for (int i = 0; i < L.linhas; i++) {
 					L.celulas[i] = (char*) malloc(L.colunas * sizeof(char));
-					L.ordem_construcao[i] = (int*) malloc(L.colunas * sizeof(int));
-
 					for (int j = 0; j < L.colunas; j++) {
-						L.ordem_construcao[i][j] = -1;
 						L.celulas[i][j] = (i & 1 && j & 1 ? ' ' : '#');	
 					}
 				}
-				algoritmo_backtracking(&L);
+				algoritmo_binary_tree(&L);
 				pacmaniza(&L);
 				break;
 			case 2:
@@ -44,14 +40,11 @@ void mazeman_inicio() {
 		}
 	}
 
-	int pontos = mazeman_game_loop(&L);
-	// TODO: salvar pontos e nome em arquivo bin	
+	mazeman_game_loop(&L);
 
 	for (int i = 0; i < L.linhas; i++) {
 		free(L.celulas[i]);
-		free(L.ordem_construcao[i]);
 	}
-	free(L.ordem_construcao);
 	free(L.celulas);
 }
 

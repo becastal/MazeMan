@@ -21,6 +21,7 @@ typedef struct {
     int posicao_coluna;
 } Fantasma;
 
+void mazeman_inicio();
 int mazeman_game_loop(labirinto *L);
 int mazeman_obter_input();
 int mazeman_obter_direcao(char input, Mazeman pac);

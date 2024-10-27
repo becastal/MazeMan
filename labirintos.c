@@ -468,8 +468,7 @@ void backtracking(int** visitado, labirinto* L, int linha, int coluna) {
 } 
 
 void pacmaniza(labirinto* L){
-	int quantidade_novas_conexoes = (L->linhas + L->colunas) / 2;
-	// TODO: numero padrao de conexões, pra ser mais facil (Arrumar dps). analisar qual a melhor relacao.
+	int quantidade_novas_conexoes = L->linhas + L->colunas;
 	for (int feito = 0; feito < quantidade_novas_conexoes;) {
 		int linha = posicao_aleatoria(L, 1);
 		int coluna = posicao_aleatoria(L, 0);
@@ -485,6 +484,16 @@ void pacmaniza(labirinto* L){
 			L->celulas[nova_linha][nova_coluna] = ' ';
 			feito++;
 		}
+	}
+
+	// nao permitindo saidas
+	for (int i = 0; i < L->linhas; i++) {
+		L->celulas[i][0] = '#';
+		L->celulas[i][L->colunas-1] = '#';
+	}
+	for (int j = 0; j < L->colunas; j++) {
+		L->celulas[0][j] = '#';
+		L->celulas[L->linhas-1][j] = '#';
 	}
 
 	// espelhando o labirinto;
