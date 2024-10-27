@@ -74,6 +74,24 @@ void mazeman_spawn(labirinto L, Mazeman *maz){
     }
 }
 
+int mazeman_obter_direcao(char input, Mazeman maz){
+    if (input == 'W' || input == 'w'){
+        return 0;
+    }
+    else if (input == 'S' || input == 's'){
+        return 1;
+    }
+    else if (input == 'D' || input == 'd'){
+        return 2;
+    }
+    else if (input == 'A' || input == 'a'){
+        return 3;
+    }
+    else{
+        return maz.direcao_olhando;
+    }
+}
+
 int mazeman_movimento_valido(labirinto L, Mazeman maz, int direcao){
     int di_1[] = {-1, 1, 0, 0};
     int dj_1[] = {0, 0, 1, -1};
