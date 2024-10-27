@@ -21,10 +21,12 @@ int mazeman_game_loop(labirinto *L){
     printa_labirinto(*L);
     // Jogo acaba quando move_acao é 2 (mazeman bate no fantasma)
     while(!fim_de_jogo){
-        // Pegar input
+        input = mazeman_obter_input();
 
-        // Obter direcao para andar
-        // Obter movimento válido
+        // Retorna da direcao para andar
+        direcao = mazeman_obter_direcao(input, mazeman);
+        // Obtem se o movimento é válido (1) ou se vai bater em fantasma (2) Caso inválido retorna 0
+        move_acao = mazeman_movimento_valido(*L, mazeman, direcao);
         mazeman.direcao_olhando = direcao;
 
         // Atualizar coisas no mapa
