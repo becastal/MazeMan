@@ -74,3 +74,26 @@ void mazeman_spawn(labirinto L, Mazeman *maz){
     }
 }
 
+int mazeman_movimento_valido(labirinto L, Mazeman maz, int direcao){
+    int di_1[] = {-1, 1, 0, 0};
+    int dj_1[] = {0, 0, 1, -1};
+
+    // Posição atual do mazeman + a posicao do proximo frame movendo na direcao que o jogador escolheu
+    int maz_i = maz.posicao_linha + di_1[direcao];
+    int maz_j = maz.posicao_coluna + dj_1[direcao];
+
+    // Checa se a posição está dentro do mapa, se não estiver retorna 0
+    if (!posicao_valida(&L, maz_i, maz_j)) return 0;
+
+    char posicao_final = L.celulas[maz_i][maz_j];
+
+    // Checa se vai bater em uma parede
+    if(posicao_final == '#'){
+        return 0;
+    }
+
+    else{
+        return 1;
+    }
+
+}
