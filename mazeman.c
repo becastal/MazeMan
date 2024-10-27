@@ -21,10 +21,12 @@ int mazeman_game_loop(labirinto *L){
     printa_labirinto(*L);
     // Jogo acaba quando move_acao é 2 (mazeman bate no fantasma)
     while(!fim_de_jogo){
-        // Pegar input
+        input = mazeman_obter_input();
 
-        // Obter direcao para andar
-        // Obter movimento válido
+        // Retorna da direcao para andar
+        direcao = mazeman_obter_direcao(input, mazeman);
+        // Obtem se o movimento é válido (1) ou se vai bater em fantasma (2) Caso inválido retorna 0
+        move_acao = mazeman_movimento_valido(*L, mazeman, direcao);
         mazeman.direcao_olhando = direcao;
 
         // Atualizar coisas no mapa
@@ -125,3 +127,32 @@ void mazeman_move(Mazeman *maz, int direcao){
     maz->posicao_coluna += dj_1[direcao];
 }
 
+void mazeman_fantasma_spawn(labirinto L, Mazeman maz, Fantasma *f){
+    int maz_pos_i;
+    int maz_pos_j;
+    int f_pos_i;
+    int f_pos_j;
+    int dif_i;
+    int dif_j;
+
+    maz_pos_i = maz.posicao_linha;
+    maz_pos_j = maz.posicao_coluna;
+
+    // Define uma direcao padrao pro fantasma
+    f->direcao_olhando = 2;
+
+    // Obtem uma posicao valida para spawnar o mazeman
+    while(1){
+        f_pos_i = posicao_aleatoria(&L, 1);
+        f_pos_j = posicao_aleatoria(&L, 0);
+        dif_i = abs(maz_pos_i - f_pos_i);
+        dif_j = abs(maz_pos_j - f_pos_j);
+
+        // Checar quadrado vazio e diferença de 5x5 do mazeman
+        if (L.celulas[f_pos_i][f_pos_j] == ' ' && dif_i > 5 && dif_j > 5){
+            f->posicao_linha = f_pos_i;
+            f->posicao_coluna = f_pos_j;
+            break;
+        }
+    }
+}
