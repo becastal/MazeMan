@@ -29,7 +29,7 @@ void mazeman_move(Mazeman *pac, int direcao);
 void mazeman_fantasma_spawn(labirinto L, Mazeman pac, Fantasma *f);
 void mazeman_fantasma_move(labirinto L, Fantasma *fant);
 void mazeman_atualizar_print(int i, int j, char conteudo);
-void mazeman_atualizar_mapa(labirinto *L, Mazeman *pac, Fantasma *f, int move_acao, int *pontos_jogador);
+void mazeman_atualizar_mapa(labirinto *L, Mazeman *pac, Fantasma *f, int move_acao, int *pontos_jogador, int** tem_ponto);
 int mazeman_checar_colisao_fantasma(labirinto L, Fantasma *f, Mazeman pac);
 void mazeman_pontuacoes();
 void mazeman_salvar_pontuacao(int pontos, labirinto* L);

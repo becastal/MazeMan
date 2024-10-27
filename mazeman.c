@@ -51,6 +51,13 @@ void mazeman_inicio() {
 		}
 	}
 
+	for (int i = 0; i < L.linhas; i++) {
+		for (int j = 0; j < L.colunas; j++) {
+			if (L.celulas[i][j] == ' ') {
+				L.celulas[i][j] = '.';
+			}
+		}
+	}
 	int pontos = mazeman_game_loop(&L);
 
 	char selecao_salvar;
@@ -101,6 +108,14 @@ int mazeman_game_loop(labirinto *L){
     mazeman_fantasma_spawn(*L, mazeman, &fantasmas[2]);
     mazeman_fantasma_spawn(*L, mazeman, &fantasmas[3]);
 
+    int** tem_ponto = (int**) malloc(L->linhas * sizeof(int*));
+    for (int i = 0; i < L->linhas; i++) {
+        tem_ponto[i] = (int*) malloc(L->colunas * sizeof(int));
+        for (int j = 0; j < L->colunas; j++) {
+			tem_ponto[i][j] = L->celulas[i][j] == '.';
+        }
+    }
+
     system("clear");
     printa_labirinto(*L);
     // Jogo acaba quando move_acao é 2 (mazeman bate no fantasma)
@@ -113,7 +128,7 @@ int mazeman_game_loop(labirinto *L){
         move_acao = mazeman_movimento_valido(*L, mazeman, direcao);
         mazeman.direcao_olhando = direcao;
 
-        mazeman_atualizar_mapa(L, &mazeman, fantasmas, move_acao, &pontos_jogador);
+        mazeman_atualizar_mapa(L, &mazeman, fantasmas, move_acao, &pontos_jogador, tem_ponto);
         fim_de_jogo = mazeman_checar_colisao_fantasma(*L, fantasmas, mazeman);
 
     #ifdef _WIN32
@@ -127,6 +142,12 @@ int mazeman_game_loop(labirinto *L){
     #endif
     mazeman_atualizar_print(L->linhas, 0, '\n');
     printf("Fim de jogo, voce morreu!\n");
+
+	for (int i = 0; i < L->linhas; i++) {
+		free(L->celulas[i]);
+	}
+	free(L->celulas);
+
     return pontos_jogador;
 }
 
@@ -154,7 +175,7 @@ void restore_input_linux() {
 }
 #endif
 
-void mazeman_atualizar_mapa(labirinto *L, Mazeman *maz, Fantasma *f, int move_acao, int *pontos_jogador){
+void mazeman_atualizar_mapa(labirinto *L, Mazeman *maz, Fantasma *f, int move_acao, int *pontos_jogador, int** tem_ponto){
     int fant_i;
     int fant_j;
     int maz_i = maz->posicao_linha;
@@ -162,9 +183,9 @@ void mazeman_atualizar_mapa(labirinto *L, Mazeman *maz, Fantasma *f, int move_ac
     char mazeman_icone_direcao[4] = {'^', 'v', '>', '<'};
     int i;
 
-
     // Limpa o quadrado antigo do mazeman
     L->celulas[maz_i][maz_j] = ' ';
+	tem_ponto[maz_i][maz_j] = 0;
 
     // Atualizar o print
     mazeman_atualizar_print(maz_i, maz_j, ' ');
@@ -189,8 +210,9 @@ void mazeman_atualizar_mapa(labirinto *L, Mazeman *maz, Fantasma *f, int move_ac
 
     // Atualiza posicao dos fantasmas ou move eles
     for (i=0; i < 4; i++){
-        L->celulas[f[i].posicao_linha][f[i].posicao_coluna] = ' '; // Limpa o quadrado antigo dos fantasmas
-        mazeman_atualizar_print(f[i].posicao_linha, f[i].posicao_coluna, ' ');
+		char c = (tem_ponto[f[i].posicao_linha][f[i].posicao_coluna] ? '.' : ' ');
+        L->celulas[f[i].posicao_linha][f[i].posicao_coluna] = c; // Limpa o quadrado antigo dos fantasmas
+        mazeman_atualizar_print(f[i].posicao_linha, f[i].posicao_coluna, c);
     }
     for (i = 0; i < 4; i++){
         mazeman_fantasma_move(*L, &f[i]);
@@ -227,7 +249,7 @@ void mazeman_spawn(labirinto L, Mazeman *maz){
     while(1){
         maz_pos_i = posicao_aleatoria(&L, 1);
         maz_pos_j = posicao_aleatoria(&L, 0);
-        if (L.celulas[maz_pos_i][maz_pos_j] == ' '){
+        if (L.celulas[maz_pos_i][maz_pos_j] != '#'){
             maz->posicao_linha = maz_pos_i;
             maz->posicao_coluna = maz_pos_j;
             break;
@@ -308,7 +330,7 @@ void mazeman_fantasma_spawn(labirinto L, Mazeman maz, Fantasma *f){
         dif_j = abs(maz_pos_j - f_pos_j);
 
         // Checar quadrado vazio e diferença de 5x5 do mazeman
-        if (L.celulas[f_pos_i][f_pos_j] == ' ' && dif_i > 5 && dif_j > 5){
+        if (L.celulas[f_pos_i][f_pos_j] != '#' && dif_i > 5 && dif_j > 5){
             f->posicao_linha = f_pos_i;
             f->posicao_coluna = f_pos_j;
             break;
@@ -375,7 +397,7 @@ int mazeman_checar_colisao_fantasma(labirinto L, Fantasma *f, Mazeman maz){
         else if(f[i].posicao_linha == maz.posicao_linha && f[i].posicao_coluna+1 == maz.posicao_coluna){
             return 1;
         }
-        else if(f[i+1].posicao_linha+1 == maz.posicao_linha && f[i].posicao_coluna+1 == maz.posicao_coluna){
+        else if(f[i].posicao_linha+1 == maz.posicao_linha && f[i].posicao_coluna+1 == maz.posicao_coluna){
             return 1;
         }
     }
