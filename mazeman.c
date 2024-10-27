@@ -53,7 +53,53 @@ int mazeman_game_loop(labirinto *L){
     return pontos_jogador;
 }
 
-void mazeman_atualizar_mapa(labirinto *L, Mazeman *pac, Fantasma *f, int move_acao, int *pontos_jogador);
+void mazeman_atualizar_mapa(labirinto *L, Mazeman *maz, Fantasma *f, int move_acao, int *pontos_jogador){
+    int fant_i;
+    int fant_j;
+    int maz_i = maz->posicao_linha;
+    int maz_j = maz->posicao_coluna;
+    char mazeman_icone_direcao[4] = {'^', 'v', '>', '<'};
+    int i;
+
+
+    // Limpa o quadrado antigo do mazeman
+    L->celulas[maz_i][maz_j] = ' ';
+
+    // Atualizar o print
+    mazeman_atualizar_print(maz_i, maz_j, ' ');
+
+    // Checa se o movimento é permitido
+    if (move_acao){
+        mazeman_move(maz, maz->direcao_olhando);
+    }
+
+    // Cordenadas do mazeman atualizadas
+    maz_i = maz->posicao_linha;
+    maz_j = maz->posicao_coluna;
+
+    // Checa se o quadrado que o mazeman está é um ponto
+    if(L->celulas[maz_i][maz_j] == '.'){
+        (*pontos_jogador)++;
+    }
+
+    // Quadrado que o mazeman vai se mover para
+    L->celulas[maz_i][maz_j] = mazeman_icone_direcao[maz->direcao_olhando];
+    mazeman_atualizar_print(maz_i, maz_j, mazeman_icone_direcao[maz->direcao_olhando]);
+
+    // Atualiza posicao dos fantasmas ou move eles
+    for (i=0; i < 4; i++){
+        L->celulas[f[i].posicao_linha][f[i].posicao_coluna] = ' '; // Limpa o quadrado antigo dos fantasmas
+        mazeman_atualizar_print(f[i].posicao_linha, f[i].posicao_coluna, ' ');
+    }
+    for (i = 0; i < 4; i++){
+        mazeman_fantasma_move(*L, &f[i]);
+        fant_i = f[i].posicao_linha;
+        fant_j = f[i].posicao_coluna;
+        // Quadrado que o fantasma vai se mover para
+        L->celulas[fant_i][fant_j] = '&';
+        mazeman_atualizar_print(fant_i, fant_j, '&');
+    }
+}
 
 int mazeman_obter_input() {
 #ifdef _WIN32
