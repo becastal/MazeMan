@@ -203,3 +203,27 @@ void mazeman_fantasma_move(labirinto L, Fantasma *f){
 void mazeman_atualizar_print(int i, int j, char conteudo){
     printf("\033[%d;%dH%c", i+1, j+1, conteudo);
 }
+
+int mazeman_checar_colisao_fantasma(labirinto L, Fantasma *f, Mazeman maz){
+    int i;
+
+    for(i = 0; i < 4; i++){
+        // Checa se o mazeman colidiu com um fantasma
+        if (L.celulas[f[i].posicao_linha][f[i].posicao_coluna] == '#'){
+            return 0;
+        }
+        else if(f[i].posicao_linha == maz.posicao_linha && f[i].posicao_coluna == maz.posicao_coluna){
+            return 1;
+        }
+        else if(f[i].posicao_linha+1 == maz.posicao_linha && f[i].posicao_coluna == maz.posicao_coluna){
+            return 1;
+        }
+        else if(f[i].posicao_linha == maz.posicao_linha && f[i].posicao_coluna+1 == maz.posicao_coluna){
+            return 1;
+        }
+        else if(f[i+1].posicao_linha+1 == maz.posicao_linha && f[i].posicao_coluna+1 == maz.posicao_coluna){
+            return 1;
+        }
+    }
+    return 0;
+}
