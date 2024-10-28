@@ -400,14 +400,27 @@ int mazeman_checar_colisao_fantasma(labirinto L, Fantasma *f, Mazeman maz){
 
 void mazeman_pontuacoes() {
     int quantidade_pontuacoes;
-    pontuacao* P = le_pontuacoes(&quantidade_pontuacoes);	
+    pontuacao* P = le_pontuacoes(&quantidade_pontuacoes);
 
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
     printf("\n%10s ║ %30s ║ %30s\n", "pontos", "nome_usuario", "nome_mapa");
     printf("═══════════╬════════════════════════════════╬═══════════════════════════════\n");
 
     for (int i = 0; i < quantidade_pontuacoes; i++) {
         printf("%10d ║ %30s ║ %30s\n", P[i].pontos, P[i].nome_usuario, P[i].nome_mapa);
     }
+    SetConsoleOutputCP(GetOEMCP());
+#else
+    printf("\n%10s ║ %30s ║ %30s\n", "pontos", "nome_usuario", "nome_mapa");
+    printf("═══════════╬════════════════════════════════╬═══════════════════════════════\n");
+
+    for (int i = 0; i < quantidade_pontuacoes; i++) {
+        printf("%10d ║ %30s ║ %30s\n", P[i].pontos, P[i].nome_usuario, P[i].nome_mapa);
+    }
+#endif
+
+
 
     printf("\nTotal de pontuações: %d\n", quantidade_pontuacoes);
     salva_pontuacoes(P, quantidade_pontuacoes);
