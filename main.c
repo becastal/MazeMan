@@ -6,6 +6,7 @@ int main() {
 	int sair = 0;
 	
 	while (!sair) {
+		system("@cls||clear");
 		puts("[+] menu inicial.");
 		puts("[0] sair.");
 		puts("[1] criar labiririntos.");
@@ -20,12 +21,15 @@ int main() {
 				sair = 1;
 				break;
 			case 1:
+				system("@cls||clear");
 				gera_labirinto();
 				break;
 			case 2:
+				system("@cls||clear");
 				resolve_labirinto();
 				break;
 			case 3:
+				system("@cls||clear");
 				mazeman_inicio();
 				break;
 			default:
