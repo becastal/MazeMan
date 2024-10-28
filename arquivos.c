@@ -76,6 +76,7 @@ labirinto escolhe_labirinto() {
     while (!ok_nome) {
         printf("[?] informe o indice do arquivo escolhido: ");
         scanf("%d", &escolha);
+	system("@cls||clear");
 
 		ok_nome = escolha >= 1 && escolha <= quantidade_arquivos;
 		if (!ok_nome) puts("[e] escolhe invalida!");
