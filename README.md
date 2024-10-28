@@ -78,7 +78,7 @@
           <br>
           <b>R.A.: 24.124.058-9</b>
           <br>
-          <cite>- Nham Nham </cite>
+          <cite>- Hype </cite>
         </sub>
     </td>
   </tr>
