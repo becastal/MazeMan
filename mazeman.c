@@ -341,13 +341,12 @@ void mazeman_fantasma_move(labirinto L, Fantasma *f){
     int fant_i;
     int fant_j;
     char posicao_final;
-
-    // Direção atual do fantasma
-    int direcao = f->direcao_olhando;
+    int direcao;
     int direcao_permitida = 0; // Checar se precisa mudar ou não direcao
 
     while(!direcao_permitida){
-        // Posição atual do mazeman + a posicao do proximo frame movendo na direcao que o jogador escolheu
+        direcao = rand() % 4;
+        // Posição atual do fantasma e a direcao que ele está configurado
         fant_i = f->posicao_linha + di_1[direcao];
         fant_j = f->posicao_coluna + dj_1[direcao];
 
@@ -363,14 +362,12 @@ void mazeman_fantasma_move(labirinto L, Fantasma *f){
         }
 
         // Altera a direcao para uma direção aleatória
-        direcao = rand() % 4;
     }
 
     f->posicao_linha = fant_i;
     f->posicao_coluna = fant_j;
     f->direcao_olhando = direcao;
 
-    // printf("%d, %d\n", fant->posicao_linha, fant->posicao_coluna);
 }
 
 void mazeman_atualizar_print(int i, int j, char conteudo){
