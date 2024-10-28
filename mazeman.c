@@ -3,6 +3,7 @@
 #include "arquivos.h"
 
 void mazeman_inicio() {
+	system("@cls||clear");
 	labirinto L;
 
 	puts("[+] seja bem-vindo a MazeMan!");
@@ -21,6 +22,7 @@ void mazeman_inicio() {
 			case 0:
 				return;
 			case 1:
+				system("@cls||clear");
 				strcpy(L.nome, "mapa aleatorio");
 				L.linhas = 2 * 10 + 1, L.colunas = 2 * 30 + 1;
 				L.celulas = (char**) malloc(L.linhas * sizeof(char*));
@@ -38,9 +40,11 @@ void mazeman_inicio() {
 				pacmaniza(&L);
 				break;
 			case 2:
+				system("@cls||clear");
 				L = escolhe_labirinto();
 				break;
-			case 3: 
+			case 3:
+				system("@cls||clear");
 				mazeman_pontuacoes();
 				return;
 			default:
