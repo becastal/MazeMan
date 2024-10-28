@@ -133,14 +133,8 @@ void salva_pontuacoes(pontuacao* P, int quantidade_pontuacoes) {
     FILE* arquivo = fopen("pontuacoes.bin", "wb");
     fwrite(&quantidade_pontuacoes, sizeof(int), 1, arquivo);
 
-	if (!quantidade_pontuacoes) {
-		fclose(arquivo);
-		return;
-	}
-
     fwrite(P, sizeof(pontuacao), quantidade_pontuacoes, arquivo);
 
     free(P);
     fclose(arquivo);
 }
-

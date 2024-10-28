@@ -76,6 +76,7 @@ void mazeman_inicio() {
 
 	if (selecao_salvar == 's' || selecao_salvar == 'S') {
 		mazeman_salvar_pontuacao(pontos, &L);
+		return;
 	}
 
 	for (int i = 0; i < L.linhas; i++) {
@@ -414,6 +415,7 @@ void mazeman_pontuacoes() {
     for (int i = 0; i < quantidade_pontuacoes; i++) {
         printf("%10d ║ %30s ║ %30s\n", P[i].pontos, P[i].nome_usuario, P[i].nome_mapa);
     }
+    printf("═══════════╩════════════════════════════════╩═══════════════════════════════\n");
     SetConsoleOutputCP(GetOEMCP());
 #else
     printf("\n%10s ║ %30s ║ %30s\n", "pontos", "nome_usuario", "nome_mapa");
@@ -422,30 +424,34 @@ void mazeman_pontuacoes() {
     for (int i = 0; i < quantidade_pontuacoes; i++) {
         printf("%10d ║ %30s ║ %30s\n", P[i].pontos, P[i].nome_usuario, P[i].nome_mapa);
     }
+    printf("═══════════╩════════════════════════════════╩═══════════════════════════════\n");
 #endif
 
-
-
-    printf("\nTotal de pontuações: %d\n", quantidade_pontuacoes);
+    printf("\ntotal de pontuacoes: %d\n", quantidade_pontuacoes);
+	getchar();
+	getchar();
     salva_pontuacoes(P, quantidade_pontuacoes);
 }
-
 void mazeman_salvar_pontuacao(int pontos, labirinto* L) {
     int quantidade_pontuacoes;
     pontuacao* pontuacoes = le_pontuacoes(&quantidade_pontuacoes);
 
     pontuacoes = realloc(pontuacoes, (quantidade_pontuacoes + 1) * sizeof(pontuacao));
 
-    char nome_nome_usuario[100];
+    char nome_usuario[100];
     printf("[i] informe seu nome: ");
-    scanf("%99s", nome_nome_usuario);
+    fgets(nome_usuario, sizeof(nome_usuario), stdin);
+    nome_usuario[strcspn(nome_usuario, "\n")] = '\0';
 
     if (pontuacoes[quantidade_pontuacoes].nome_usuario) {
-        strcpy(pontuacoes[quantidade_pontuacoes].nome_usuario, nome_nome_usuario);
+        strncpy(pontuacoes[quantidade_pontuacoes].nome_usuario, nome_usuario, sizeof(pontuacoes[quantidade_pontuacoes].nome_usuario) - 1);
+        pontuacoes[quantidade_pontuacoes].nome_usuario[sizeof(pontuacoes[quantidade_pontuacoes].nome_usuario) - 1] = '\0';
     }
+
     strncpy(pontuacoes[quantidade_pontuacoes].nome_mapa, L->nome, sizeof(pontuacoes[quantidade_pontuacoes].nome_mapa) - 1);
     pontuacoes[quantidade_pontuacoes].nome_mapa[sizeof(pontuacoes[quantidade_pontuacoes].nome_mapa) - 1] = '\0';
     pontuacoes[quantidade_pontuacoes].pontos = pontos;
 
     salva_pontuacoes(pontuacoes, quantidade_pontuacoes + 1);
 }
+
