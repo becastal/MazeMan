@@ -440,6 +440,7 @@ void mazeman_salvar_pontuacao(int pontos, labirinto* L) {
 
     char nome_usuario[100];
     printf("[i] informe seu nome: ");
+	getchar();
     fgets(nome_usuario, sizeof(nome_usuario), stdin);
     nome_usuario[strcspn(nome_usuario, "\n")] = '\0';
 
