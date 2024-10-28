@@ -10,12 +10,12 @@
 -  Para Compilar nosso projeto é necessario abrir e rodar nosso makefile que apresenta o seguinte codigo:
   ```
   all:
-	gcc main.c labirintos.c arquivos.c -o exe
+	gcc main.c labirintos.c arquivos.c mazeman.c -o exe
   ```
 **2.Terminal**
 -  Abrir o Terminal e digitar o seguinte codigo
   ```
-	gcc main.c labirintos.c arquivos.c -o exe
+	gcc main.c labirintos.c arquivos.c mazeman.c -o exe
   ```
 - Logo em seguida digite
   ```
