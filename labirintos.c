@@ -83,7 +83,7 @@ void gera_labirinto() {
 	novo_labirinto.celulas[novo_labirinto.linhas-1][1] = ' ';
 	novo_labirinto.celulas[novo_labirinto.linhas-1][novo_labirinto.colunas-2] = ' ';
 
-
+	system("@cls||clear");
 	puts("[!] possiveis algoritmos para gerar o labirinto");
 	puts("[0] algoritmo da binary tree.");
 	puts("[1] algoritmo de sidewinder.");
@@ -101,22 +101,28 @@ void gera_labirinto() {
 		ok_algoritmo = 1;
 		switch (selecao) {
 			case 0:
+				system("@cls||clear");
 				algoritmo_binary_tree(&novo_labirinto);
 				break;	
 			case 1:
+				system("@cls||clear");
 				algoritmo_sidewinder(&novo_labirinto);
 				break;	
 			case 2:
+				system("@cls||clear");
 				algoritmo_aldous_border(&novo_labirinto);
 				break;	
 			case 3:
+				system("@cls||clear");
 				algoritmo_hunt_and_kill(&novo_labirinto);
 				break;
 			case 4:
+				system("@cls||clear");
 				algoritmo_backtracking(&novo_labirinto);
 				break;
 			case 5:
 				// caso em que é criado um labirinto e colocado decente para o mazeman
+				system("@cls||clear");
 				algoritmo_backtracking(&novo_labirinto);
 				pacmaniza(&novo_labirinto);
 				break;
@@ -125,7 +131,7 @@ void gera_labirinto() {
 				ok_algoritmo = 0;
 		}
 	}
-
+	system("@cls||clear");
 	ver_construcao(&novo_labirinto);
 
 	char selecao_salvar;
@@ -142,6 +148,7 @@ void gera_labirinto() {
 
 	if (selecao_salvar == 's' || selecao_salvar == 'S') {
 		salva_labirinto(&novo_labirinto);
+		system("@cls||clear");
 	}
 
 	printa_labirinto(novo_labirinto);
@@ -552,6 +559,7 @@ void esperar_enter(int sim) {
 
 
 void ver_construcao(labirinto *L) {
+    system("@cls||clear");
 	// cada algoritmo gerador de labirinto guarda a ordem com que as celulas foram visitadas e paredes foram quebradas.
     esperar_enter(0);
 
@@ -648,18 +656,21 @@ void resolve_labirinto() {
 		ok_modo = 1;
 		switch (selecao) {
 			case 0:
+				system("@cls||clear");
 				inicio_i = 0;
 				inicio_j = 1;
 				fim_i = L.linhas-1;
 				fim_j = L.colunas-2;
 				break;
 			case 1:
+				system("@cls||clear");
 				inicio_i = posicao_aleatoria(&L, 1);
 				inicio_j = posicao_aleatoria(&L, 0);
 				fim_i = (rand() & 1 ? 0 : L.linhas-1);
 				fim_j = (rand() & 1 ? 1 : L.colunas-2);
 				break;
 			case 2:
+				system("@cls||clear");
 				int ok_inicio = 0, ok_fim = 0;
 				printa_labirinto(L);
 				while (!ok_inicio) {
@@ -742,7 +753,7 @@ void ver_resolucao(labirinto* L, int** distancia, int inicio_i, int inicio_j, in
 			}
 		}
 	}
-    system("@cls||clear");
+   	system("@cls||clear");
 	printa_labirinto(*L);
 
     int etapa = 0, sair = 0;
