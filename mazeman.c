@@ -76,7 +76,6 @@ void mazeman_inicio() {
 		mazeman_salvar_pontuacao(pontos, &L);
 	}
 
-
 	for (int i = 0; i < L.linhas; i++) {
 		free(L.celulas[i]);
 		free(L.ordem_construcao[i]);
