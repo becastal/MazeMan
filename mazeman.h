@@ -1,8 +1,12 @@
 #include "labirintos.h"
 
-#ifdef _WIN32
-    #include <conio.h> #include <windows.h> #else
 #include <unistd.h>
+#include <string.h>
+
+#ifdef _WIN32
+    #include <conio.h>
+    #include <windows.h>
+#else
 	#include <termios.h>
 	#include <fcntl.h>
 #endif

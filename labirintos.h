@@ -2,6 +2,15 @@
 #define labirintos_h
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
+
+#ifdef _WIN32
+    #include "windows.h"
+#else
+    #include <termios.h>
+#endif
 
 extern int di_2[];
 extern int dj_2[];
