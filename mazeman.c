@@ -1,8 +1,6 @@
 #include "mazeman.h"
 #include "labirintos.h"
 #include "arquivos.h"
-#include <unistd.h>
-#include <string.h>
 
 void mazeman_inicio() {
 	labirinto L;
@@ -115,7 +113,7 @@ int mazeman_game_loop(labirinto *L){
         }
     }
 
-    system("clear");
+    system("@cls||clear");
     printa_labirinto(*L);
     // Jogo acaba quando move_acao é 2 (mazeman bate no fantasma)
     while(!fim_de_jogo){

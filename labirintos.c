@@ -1,9 +1,5 @@
 #include "labirintos.h"
 #include "arquivos.h"
-#include <stdlib.h>
-#include <time.h>
-#include <termios.h>
-#include <unistd.h>
 
 int di_2[] = {-2, 2, 0, 0};
 int dj_2[] = {0, 0, 2, -2};
@@ -161,7 +157,13 @@ void gera_labirinto() {
 void printa_labirinto(labirinto L) {
 	for (int i = 0; i < L.linhas; i++) {
 		for (int j = 0; j < L.colunas; j++) {
-			printf("%s", caracter_parede(&L, i, j));
+            #ifdef _WIN32
+                SetConsoleOutputCP(CP_UTF8);
+                printf("%s", caracter_parede(&L, i, j));
+            SetConsoleOutputCP(GetOEMCP());
+            #else
+                printf("%s", caracter_parede(&L, i, j));
+            #endif
 		}
 		printf("\n");
 	}
@@ -519,7 +521,22 @@ void pacmaniza(labirinto* L){
 		}
 	}
 }
+
 void esperar_enter(int sim) {
+#ifdef _WIN32
+    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    DWORD mode;
+
+    GetConsoleMode(hStdin, &mode);
+
+    if (sim) {
+        mode |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+    } else {
+        mode &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+    }
+
+    SetConsoleMode(hStdin, mode);
+#else
     struct termios termios_p;
     tcgetattr(STDIN_FILENO, &termios_p);
 
@@ -530,7 +547,9 @@ void esperar_enter(int sim) {
     }
 
     tcsetattr(STDIN_FILENO, TCSANOW, &termios_p);
+#endif
 }
+
 
 void ver_construcao(labirinto *L) {
 	// cada algoritmo gerador de labirinto guarda a ordem com que as celulas foram visitadas e paredes foram quebradas.
@@ -546,7 +565,7 @@ void ver_construcao(labirinto *L) {
         }
     }
 
-	system("clear");
+    system("@cls||clear");
 	printa_labirinto(*L);
 	
 
@@ -723,7 +742,7 @@ void ver_resolucao(labirinto* L, int** distancia, int inicio_i, int inicio_j, in
 			}
 		}
 	}
-	system("clear");
+    system("@cls||clear");
 	printa_labirinto(*L);
 
     int etapa = 0, sair = 0;

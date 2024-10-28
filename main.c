@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "labirintos.h"
-#include "arquivos.h"
 #include "mazeman.h"
 
 int main() {
