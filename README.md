@@ -39,10 +39,10 @@
 -	**1.0 Jogar mapa aleatorio novo**
 	-	Aqui um mapa aleatório com um tamanho predefinido é gerado, onde o usuário poderá jogar uma partida rápida. Apos a partida, é questionado se o mesmo deseja que salve sua pontuação.
 -	**1.1 Jogar em mapa ja gerado**
-	-	Nesta opção, é mostrado ao usuário todos os labirintos salvos por ele (labirintos gerados com o algoritmo do MazeMan Recomendados!)
+	-	Nesta opção, é mostrado ao usuário todos os labirintos salvos por ele **(labirintos gerados com o algoritmo do MazeMan Recomendados!)**
  	-	Após escolher o labirinto, o usuário poderá jogar a vontade. Ao fim do jogo, é perguntado se deseja salvar sua pontuação.
 -	**1.2 Ver pontuações**
-	-	Nesta opção, é mostrado ao usuário todas as suas pontuações adquiridas em cada mapa jogado.
+	-	Nesta opção, é mostrado ao usuário todas as suas pontuações adquiridas em cada mapa jogado. (clique **"enter"** para voltar).
   ### 3. Como Jogar? 
 -	MazeMan é um jogo que se passa em um labirinto e o jogador **"<"** tem como objetivo, passar por todo labirinto coletando comida **"•"** que esta espalhada por todo labirinto, porem, o jogador é perseguido por fantasmas. **"&"** O qual são perigosos e não podem encontrar o jogador enquanto ele vaga por todo labirinto.
 -	**1.0 Controles**
