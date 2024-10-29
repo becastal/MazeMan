@@ -78,6 +78,9 @@ void mazeman_inicio() {
 		mazeman_salvar_pontuacao(pontos, &L);
 		return;
 	}
+	else if (selecao_salvar == 'n' || selecao_salvar == 'N') {
+		return;
+	}
 
 	for (int i = 0; i < L.linhas; i++) {
 		free(L.celulas[i]);
