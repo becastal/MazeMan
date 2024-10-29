@@ -613,6 +613,7 @@ void ver_construcao(labirinto *L) {
         printf("...");
 
         char c = getchar();
+	system("@cls||clear");
         if (c == '\033') {
             c = getchar();
             if (c == '[') {
